@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	
+	<typeAliases><!-- 이 설정은 DAO에서 어떠한 작업을 하였고, 그에 해당하는 결과물을 DB에서 가져왔다면 이제 VO에 담아야 하는데,
+마이바티스에서 VO 객체를 인지할 수 있도록 설정하는 부분입니다.
+ -->
+		<typeAlias type="sesoc.global.keyworld.vo.Customer" alias = "Customer"/>
+		<typeAlias type="sesoc.global.keyworld.vo.Keyword" alias = "Keyword"/>
+		<!-- <typeAlias type="sesoc.global.test.vo.Board" alias = "Board"/>
+		<typeAlias type="sesoc.global.test.vo.Notice" alias = "Notice"/>
+		<typeAlias type="sesoc.global.test.vo.Reply" alias = "Reply"/> -->
+		
+	</typeAliases>
+	
+  <mappers>
+    
+    <mapper resource="mappers/customerMapper.xml"/>
+    <mapper resource="mappers/keywordMapper.xml"/>
+  <!--   <mapper resource="mappers/boardMapper.xml"/>
+    <mapper resource="mappers/noticeMapper.xml"/>
+    <mapper resource="mappers/replyMapper.xml"/>  -->
+ 
+  </mappers>
+  
+</configuration>

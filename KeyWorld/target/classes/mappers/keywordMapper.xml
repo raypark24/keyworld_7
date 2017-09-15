@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sesoc.global.keyworld.dao.KeywordDAO">
+	
+	
+	<select id = "selectKeyword"  resultType="Keyword">
+		select t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude
+		from
+			(SELECT nation_num,keyword 
+			FROM
+				(SELECT nation_num,
+        			(SELECT us_keyword FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword,
+        			COUNT(*) count,
+        			ROW_NUMBER() OVER(PARTITION BY nation_num ORDER BY COUNT(*) DESC) rank
+  					FROM used_keyword uk, used_location ul, article ar, location lo
+					WHERE uk.article_num = ar.article_num
+					AND ar.article_num = ul.article_num
+					AND ul.location_num = lo.location_num
+					GROUP BY keyword_num, nation_num) WHERE rank=1
+				) t,
+				 (SELECT cap.nation_num as nation_num, 
+				 		cap.latitude as latitude, 
+				 		cap.longitude as longitude 
+				 	FROM capital cap
+				 ) cap
+  			where cap.nation_num = t.nation_num
+	</select>
+	
+</mapper>
