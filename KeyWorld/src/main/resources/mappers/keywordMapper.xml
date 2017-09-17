@@ -4,8 +4,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="sesoc.global.keyworld.dao.KeywordDAO">
-	
-	
+
 	<select id = "selectKeyword"  resultType="Keyword">
 		select t.keyword_num, t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude
 		from
@@ -30,7 +29,7 @@
   			where cap.nation_num = t.nation_num
 	</select>
 	
-	<select id = "selectKeywordRanking"  resultType="Keyword">
+	<select id = "selectRanking"  resultType="RankKeyword">
 	<![CDATA[
 		select ukn.keyword_num keyword_num, k.us_keyword keyword
 		from 

@@ -9,6 +9,7 @@
  -->
 		<typeAlias type="sesoc.global.keyworld.vo.Customer" alias = "Customer"/>
 		<typeAlias type="sesoc.global.keyworld.vo.Keyword" alias = "Keyword"/>
+		<typeAlias type="sesoc.global.keyworld.vo.RankKeyword" alias = "RankKeyword"/>
 		<!-- <typeAlias type="sesoc.global.test.vo.Board" alias = "Board"/>
 		<typeAlias type="sesoc.global.test.vo.Notice" alias = "Notice"/>
 		<typeAlias type="sesoc.global.test.vo.Reply" alias = "Reply"/> -->

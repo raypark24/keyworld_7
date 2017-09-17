@@ -25,6 +25,7 @@ import sesoc.global.keyworld.dao.CustomerRepository;
 import sesoc.global.keyworld.dao.KeywordRepository;
 import sesoc.global.keyworld.vo.Customer;
 import sesoc.global.keyworld.vo.Keyword;
+import sesoc.global.keyworld.vo.RankKeyword;
 
 
 @Controller
@@ -68,7 +69,7 @@ public class CustomerController {
 		
 		List<Keyword> keywordList = repok.selectKeyword();
 		System.out.println("11");
-		List<Keyword> rankingList = repok.selectKeywordRanking();
+		List<RankKeyword> rankingList = repok.selectKeywordRanking();
 		
 		
 		
