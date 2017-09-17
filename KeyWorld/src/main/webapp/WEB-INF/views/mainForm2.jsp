@@ -171,6 +171,13 @@ margin: 0 3px 0 0
 
 }
 
+.we-pp-wrapper{
+	background-color : rgba(255,255,255,0.2) !important;
+}
+b{
+	color : red;
+}
+
 /*#datep{
     display: block;
     
@@ -310,7 +317,7 @@ margin: 0 3px 0 0
        <script src="http://www.webglearth.com/v2/api.js"></script>
   <script>
   function initialize() {
-	  
+	 
      var earth = new WE.map('earth_div', {tilting:false, sky: true, atmosphere: true});
       var natural = WE.tileLayer('http://data.webglearth.com/natural-earth-color/{z}/{x}/{y}.jpg', {
           tileSize: 256,
@@ -325,8 +332,8 @@ margin: 0 3px 0 0
 
      
       <c:forEach items="${keyList}" var="keyword">
-      WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 100, closeButton: true}).openPopup();
-      
+      	WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 100, closeButton: true}).openPopup();
+      	
       </c:forEach>
       
       var marker = WE.marker([51.5, -0.09],'', 15, 15).addTo(earth);
@@ -353,6 +360,9 @@ margin: 0 3px 0 0
       
       //earth.setView([48, 6], 5);
       $(".we-pm-icon").css("opacity", "0.7");
+      
+      $(".we-pp-tip").removeAttr("background");
+      $(".we-pp-wrapper").removeAttr("background");
       
     }
     </script>  
@@ -404,8 +414,7 @@ margin: 0 3px 0 0
        
         $('#datep').css("display","none");
     })
-          
-          
+    
           
           
             
@@ -443,7 +452,7 @@ margin: 0 3px 0 0
         });
         
         var panel2 = $.jsPanel({
-            position:    {my: "left-top", at: "left-top", offsetY: 85},
+            position:    {my: "left-top", at: "left-top", offsetY: 60},
             theme: 'black filled',
             contentSize: {width: 260, height: 300},
             headerControls: {
@@ -457,7 +466,7 @@ margin: 0 3px 0 0
             border:   "1px solid darkgray",
             content: function(){
                 $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
-                return "${rankKeyword}";
+                return "<c:forEach items='${rankingList}' var='keyword' varStatus='stat'>${keyword.keyword} <br/></c:forEach>";
             },
             callback: function () {
                 this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});
@@ -469,6 +478,7 @@ margin: 0 3px 0 0
         var panel3 = $.jsPanel({
             position:    {my: "right-top", at: "right-top", offsetY: 85, offsetX: -10},
             theme: 'black filled',
+            contentOverflow : 'scroll',
             contentSize: {width: 320, height: 700},
             headerTitle: "Article",
             headerControls: {
@@ -492,6 +502,49 @@ margin: 0 3px 0 0
             },
             callback: function () {
                 this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});
+                this.content.css({"font-size": "16px","padding": "15px"});
+                
+            }
+        });
+        
+        var panel4 = $.jsPanel({
+            position:    {my: "right-top", at: "right-top", offsetY: 85 , offsetX :-15},
+            contentOverflow: 'scroll',
+            theme: 'black filled',
+            contentSize: {width: 300, height: 500},
+            headerToolbar: [
+                {
+                    item:     "<span class='fa fa-bars' style='cursor:pointer;'>",
+                    event:    "click",
+                    callback: function (event) {event.data.content.append("<p>You clicked on the menu ...</p>"); }
+                },
+                {
+                    item:     "<span class='fa fa-cog' style='cursor:pointer;margin-left:5px;'>",
+                    event:    "click",
+                    callback: function (event) {event.data.content.append("<p>You clicked on the tools this time ...</p>"); }
+                },
+                {
+                    item:     "<span class='fa fa-sign-in' style='cursor:pointer;margin-left:5px;'>",
+                    event:    "click",
+                    callback: function (event) {event.data.content.append("<p>Logout ...</p>"); }
+                }
+            ],
+            headerControls: {
+                maximize: 'remove',
+                close: 'remove'
+            },
+                dragit: {
+                disable: true
+            },
+            headerTitle: "Article",
+            border:   "1px solid darkgray",
+            content: function(){
+                $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
+                return "   <div id = 'articleList'><table id = 'articleTable'><tr><th>번 호</th>  <th>기사 제목</th>  </tr><c:forEach items='${articleList}' var='article' varStatus='stat'><tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>${stat.count}</td> <td>${article.title}</td> </tr></c:forEach></table></div>";
+            },
+            callback: function () {
+                this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" });
+     
                 this.content.css({"font-size": "16px","padding": "15px"});
                 
             }

@@ -1,6 +1,7 @@
 package sesoc.global.keyworld.vo;
 
 public class Keyword {
+	private int keyword_num;
 	private String nation_num;
 	private String keyword;
 	private Double latitude;
@@ -9,12 +10,30 @@ public class Keyword {
 	public Keyword() {
 	}
 	
-	public Keyword(String nation_num, String keyword, Double latitude, Double longitude) {
+	public Keyword(int keyword_num, String keyword) {
 		super();
+		this.nation_num="0";
+		this.latitude = 0.0;
+		this.longitude = 0.0;
+		this.keyword_num = keyword_num;
+		this.keyword = keyword;
+	}
+
+	public Keyword(int keyword_num,String nation_num, String keyword, Double latitude, Double longitude) {
+		super();
+		this.keyword_num = keyword_num;
 		this.nation_num = nation_num;
 		this.keyword = keyword;
 		this.latitude = latitude;
 		this.longitude = longitude;
+	}
+	
+	public int getKeyword_num() {
+		return keyword_num;
+	}
+
+	public void setKeyword_num(int keyword_num) {
+		this.keyword_num = keyword_num;
 	}
 
 	public String getKeyword() {

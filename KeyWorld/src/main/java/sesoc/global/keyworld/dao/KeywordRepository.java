@@ -24,5 +24,14 @@ public class KeywordRepository {
 		
 		return keywordList;
 	}
+	
+	public List<Keyword> selectKeywordRanking() {
+		
+		KeywordDAO dao = sqlSession.getMapper(KeywordDAO.class);
+		
+		List<Keyword> keywordList = dao.selectKeywordRanking();
+		
+		return keywordList;
+	}
 
 }

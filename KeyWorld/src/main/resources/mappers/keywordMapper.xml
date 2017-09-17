@@ -7,12 +7,13 @@
 	
 	
 	<select id = "selectKeyword"  resultType="Keyword">
-		select t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude
+		select t.keyword_num, t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude
 		from
-			(SELECT nation_num,keyword 
+			(SELECT nation_num,keyword, keyword_num 
 			FROM
 				(SELECT nation_num,
         			(SELECT us_keyword FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword,
+        			(SELECT keyword_num FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword_num,
         			COUNT(*) count,
         			ROW_NUMBER() OVER(PARTITION BY nation_num ORDER BY COUNT(*) DESC) rank
   					FROM used_keyword uk, used_location ul, article ar, location lo
@@ -27,6 +28,14 @@
 				 	FROM capital cap
 				 ) cap
   			where cap.nation_num = t.nation_num
+	</select>
+	
+	<select id = "selectKeywordRanking"  resultType="Keyword"> 
+		select ukn.keyword_num, k.us_keyword 
+		from 
+			(select uk.keyword_num, count(uk.keyword_num) from used_keyword uk group by uk.keyword_num order by count(uk.keyword_num) desc) ukn,
+			keyword k 
+		where rownum<11 and ukn.keyword_num = k.keyword_num
 	</select>
 	
 </mapper>
