@@ -3,6 +3,10 @@ package sesoc.global.keyworld.vo;
 public class RankKeyword {
 	private int keyword_num;
 	private String keyword;
+	
+	public RankKeyword(){
+		
+	}
 	public RankKeyword(int keyword_num, String keyword) {
 		super();
 		this.keyword_num = keyword_num;

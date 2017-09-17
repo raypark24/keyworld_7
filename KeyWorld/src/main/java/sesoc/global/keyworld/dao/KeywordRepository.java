@@ -16,10 +16,9 @@ public class KeywordRepository {
 	@Autowired
 	SqlSession sqlSession;
 	
+	private KeywordDAO dao = sqlSession.getMapper(KeywordDAO.class);
 	
 	public List<Keyword> selectKeyword() {
-		
-		KeywordDAO dao = sqlSession.getMapper(KeywordDAO.class);
 		
 		List<Keyword> keywordList = dao.selectKeyword();
 		
@@ -27,8 +26,6 @@ public class KeywordRepository {
 	}
 	
 	public List<RankKeyword> selectKeywordRanking() {
-		System.out.println("2");
-		KeywordDAO dao = sqlSession.getMapper(KeywordDAO.class);
 		System.out.println("3");
 		List<RankKeyword> keywordList = dao.selectRanking();
 		System.out.println("4");

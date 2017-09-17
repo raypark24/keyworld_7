@@ -466,7 +466,8 @@ b{
             border:   "1px solid darkgray",
             content: function(){
                 $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
-                return "<c:forEach items='${rankingList}' var='keyword' varStatus='stat'>${keyword.keyword} <br/></c:forEach>";
+                //return "<c:forEach items='${rankingList}' var='keyword' varStatus='stat'>${keyword.keyword} <br/></c:forEach>";
+                return "${rankKeyword}";
             },
             callback: function () {
                 this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});

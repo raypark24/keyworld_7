@@ -127,7 +127,7 @@ public class CustomerController {
 		model.addAttribute("rankingList",rankingList);
 		//모델 혹은 리퀘스트는 두 페이지 사이에서만 사용된다. redirect를 하면 모델은 사라지지만 세션은 살아있다. 
 		return "mainForm2";
-		//HomeController를 거쳐서, index로 
+		
 		
 		/*return "index";*/
 		
