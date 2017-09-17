@@ -177,6 +177,12 @@ margin: 0 3px 0 0
 b{
 	color : red;
 }
+.a_rank{
+	color : white !important;
+}
+.a_rank:hover{
+	color : #fed136 !important;
+}
 
 /*#datep{
     display: block;
@@ -443,7 +449,7 @@ b{
             border:   "1px solid darkgray",
             content: function(){
                 $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
-                return "${realKeyword}";
+                return "<c:forEach items='${realKeywordList}' var='keyword' varStatus='stat'><a href='#' class='a_rank'>${stat}위 : ${keyword.keyword}</a><br/></c:forEach>";
             },
             callback: function () {
                 this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});
@@ -467,7 +473,7 @@ b{
             content: function(){
                 $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
                 //return "<c:forEach items='${rankingList}' var='keyword' varStatus='stat'>${keyword.keyword} <br/></c:forEach>";
-                return "${rankKeyword}";
+                return "<c:forEach items='${rankingList}' var='keyword' varStatus='stat'><a href='#' class='a_rank'>${stat}위 : ${keyword.keyword}</a><br/></c:forEach>";
             },
             callback: function () {
                 this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});
@@ -476,37 +482,6 @@ b{
             }
         });
         
-        var panel3 = $.jsPanel({
-            position:    {my: "right-top", at: "right-top", offsetY: 85, offsetX: -10},
-            theme: 'black filled',
-            contentOverflow : 'scroll',
-            contentSize: {width: 320, height: 700},
-            headerTitle: "Article",
-            headerControls: {
-                maximize: 'remove',
-                close: 'remove'
-            },
-                 dragit: {
-        disable: true
-    },
-           
-            content: function(){
-                $(this).css('background-color', 'rgba(255,255,255,' + 0.1 + ')');
-                return "${article}"
-            },
-             contentIframe: {
-                width:  300,
-                height: 700,
-                src:    '/WEB-INF/views/home.jsp',
-                name:   'myFrame',
-                style:  {'border': '1px solid #000'}
-            },
-            callback: function () {
-                this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});
-                this.content.css({"font-size": "16px","padding": "15px"});
-                
-            }
-        });
         
         var panel4 = $.jsPanel({
             position:    {my: "right-top", at: "right-top", offsetY: 85 , offsetX :-15},
@@ -550,6 +525,54 @@ b{
                 
             }
         });
+        
+        var panel5 = $.jsPanel({
+            paneltype:   'modal',
+             position:    {my: "center", at: "center"},
+             contentOverflow: 'scroll',
+             theme: 'black filled',
+             contentSize: {width: 1000, height: 600},
+             headerToolbar: [
+                 {
+                     item:     "<span class='fa fa-bars' style='cursor:pointer;'>",
+                     event:    "click",
+                     callback: function (event) {event.data.content.append("<p>You clicked on the menu ...</p>"); }
+                 },
+                 {
+                     item:     "<span class='fa fa-cog' style='cursor:pointer;margin-left:5px;'>",
+                     event:    "click",
+                     callback: function (event) {event.data.content.append("<p>You clicked on the tools this time ...</p>"); }
+                 },
+                 {
+                     item:     "<span class='fa fa-sign-in' style='cursor:pointer;margin-left:5px;'>",
+                     event:    "click",
+                     callback: function (event) {event.data.content.append("<p>Logout ...</p>"); }
+                 }
+             ],
+             
+             show: "jsPanelFadeIn",  
+             headerTitle: "Article",
+             border:   "1px solid darkgray",
+             content: function(){
+                 $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
+                 return "취직 시켜주세요";
+             },
+             headerControls: {
+             
+                  controls : 'all',
+                     minimize : 'remove'
+                 
+             },
+             dragit: {
+                 disabled: false
+             },
+             callback: function () {
+                 this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" });
+      
+                 this.content.css({"font-size": "16px","padding": "15px"});
+                 
+             }
+         });
         
 /*    var arr = [
     {

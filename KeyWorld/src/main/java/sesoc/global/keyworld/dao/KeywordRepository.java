@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import sesoc.global.keyworld.vo.Keyword;
 import sesoc.global.keyworld.vo.RankKeyword;
+import sesoc.global.keyworld.vo.RealKeyword;
 
 
 @Repository
@@ -34,6 +35,14 @@ public class KeywordRepository {
 		System.out.println("34");
 		return keywordList;
 	}
-
+	
+	public List<RealKeyword> selectRealKeyword() {
+		
+		KeywordDAO dao = sqlSession.getMapper(KeywordDAO.class);
+		
+		List<RealKeyword> realKeywordList = dao.selectRealKeyword();
+		
+		return realKeywordList;
+	}
 
 }

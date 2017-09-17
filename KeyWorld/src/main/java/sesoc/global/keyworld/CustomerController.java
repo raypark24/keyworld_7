@@ -26,6 +26,7 @@ import sesoc.global.keyworld.dao.KeywordRepository;
 import sesoc.global.keyworld.vo.Customer;
 import sesoc.global.keyworld.vo.Keyword;
 import sesoc.global.keyworld.vo.RankKeyword;
+import sesoc.global.keyworld.vo.RealKeyword;
 
 
 @Controller
@@ -76,7 +77,8 @@ public class CustomerController {
 		List<Keyword> keywordList = repok.selectKeyword();
 		System.out.println(keywordList.toString());
 		System.out.println("11");
-		
+		List<RankKeyword> rankingList = repok.selectRankKeyword();
+		List<RealKeyword> realKeywordList = repok.selectRealKeyword();
 		
 		
 		/*for(int i = 0 ; i < 10 ; i ++ ){
@@ -111,7 +113,7 @@ public class CustomerController {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		rankKeyword = rankKeyword.replaceAll("\\,", "");
+		/*rankKeyword = rankKeyword.replaceAll("\\,", "");
 		rankKeyword = rankKeyword.replaceAll("echo : ", "");
 		String[] keyword2 = rankKeyword.split("ppp");
 		System.out.println(keyword2.toString());
@@ -124,8 +126,9 @@ public class CustomerController {
 		model.addAttribute("rankKeyword",rankKeyword);
 		model.addAttribute("realKeyword",realKeyword);
 		model.addAttribute("article",article);
-		System.out.println(keywordList.toString());
-		
+		System.out.println(keywordList.toString());*/
+		model.addAttribute("rankingList", rankingList);
+		model.addAttribute("realKeywordList", realKeywordList);
 		
 		model.addAttribute("keyList", keywordList);
 		//모델 혹은 리퀘스트는 두 페이지 사이에서만 사용된다. redirect를 하면 모델은 사라지지만 세션은 살아있다. 

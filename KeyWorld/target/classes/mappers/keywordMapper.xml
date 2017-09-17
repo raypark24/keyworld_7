@@ -30,15 +30,25 @@
   			where cap.nation_num = t.nation_num
 	</select>
 	
-	<select id = "selectKeyword"  resultType="RankKeyword">
+	<select id = "selectRankKeyword"  resultType="RankKeyword">
+	<![CDATA[
 		select ukn.keyword_num keyword_num, k.us_keyword keyword 
 		from 
 			(select uk.keyword_num, count(uk.keyword_num) from used_keyword uk group by uk.keyword_num order by count(uk.keyword_num) desc) ukn,
 			keyword k 
-		where rownum=1 
+		where rownum < 11 
 		and ukn.keyword_num = k.keyword_num
+	]]>
 	</select>
 	
 	
+	<select id = "selectRealKeyword"  resultType="RealKeyword">
+	<![CDATA[
+		select realtime_num,realtime_word, to_char(realtime_date,'YYYY/MM/DD HH24:mm') 
+		from realtime_word 
+		where rownum<11 
+		order by realtime_date desc
+	]]>
+	</select>
 	
 </mapper>
