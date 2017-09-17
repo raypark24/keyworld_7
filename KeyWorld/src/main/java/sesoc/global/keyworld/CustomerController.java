@@ -90,7 +90,7 @@ public class CustomerController {
 			keyList.add(k);
 			
 		}*/
-		try {
+		/*try {
 			socket = new Socket("localhost",9999);
 		} catch(Exception e){
 			e.printStackTrace();
@@ -115,7 +115,7 @@ public class CustomerController {
 			socket.close();
 		}catch(Exception e){
 			e.printStackTrace();
-		}
+		}*/
 		/*rankKeyword = rankKeyword.replaceAll("\\,", "");
 		rankKeyword = rankKeyword.replaceAll("echo : ", "");
 		String[] keyword2 = rankKeyword.split("ppp");
