@@ -30,7 +30,7 @@
   			where cap.nation_num = t.nation_num
 	</select>
 	
-	<select id = "selectKeywordRanking" resultType="Keyword">
+	<select id = "selectKeywordRanking"  resultType="Keyword">
 	<![CDATA[
 		select ukn.keyword_num keyword_num, k.us_keyword keyword
 		from 
