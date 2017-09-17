@@ -174,13 +174,31 @@ margin: 0 3px 0 0
 .we-pp-wrapper{
 	background-color : rgba(255,255,255,0.2) !important;
 }
-b{
+.we-pp{
+	position : relative !important;
+}
+.we-pp-wrapper:hover{
+	background-color : rgba(255,255,255,1) !important;
+}
+b.bluetext{
+	color : blue;
+}
+b.blacktext{
+	color : black;
+}
+b.redtext{
 	color : red;
 }
 .a_rank{
 	color : white !important;
 }
+.a_realrank{
+	color : white !important;
+}
 .a_rank:hover{
+	color : #fed136 !important;
+}
+.a_realrank:hover{
 	color : #fed136 !important;
 }
 
@@ -338,8 +356,15 @@ b{
 
      
       <c:forEach items="${keyList}" var="keyword">
-      	WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 100, closeButton: true}).openPopup();
-      	
+  		<c:if test="${keyword.point eq null}">
+			WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px; z-index:50000'><b class='blacktext'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 100, closeButton: true}).openPopup();
+		</c:if>
+      	<c:if test="${keyword.point > 0}">
+      		WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px; z-index:50000'><b class='bluetext'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 100, closeButton: true}).openPopup();
+      	</c:if>
+      	<c:if test="${keyword.point < 0}">
+  			WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px; z-index:50000'><b class='redtext'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 100, closeButton: true}).openPopup();
+  		</c:if>
       </c:forEach>
       
       var marker = WE.marker([51.5, -0.09],'', 15, 15).addTo(earth);
@@ -369,8 +394,37 @@ b{
       
       $(".we-pp-tip").removeAttr("background");
       $(".we-pp-wrapper").removeAttr("background");
+      $(".we-pp").mouseenter(function(){
+    	 $(".we-pp-wrapper").css('z-index','200000');
+    	 $(this).css('z-index','200000');
+      });
+      $(".we-pp").mouseout(function(){
+    	 $(".we-pp-wrapper").css('z-index','50000');
+    	 $(this).css('z-index','50000');
+      });
       
-    }
+      $(".a_rank").click(function(){
+    	  $("#articleTable").html("<tr><th>번 호</th><th>기사 제목</th></tr>");
+    	  var s = $(this).attr('id');
+    	  $.ajax({
+    		 url: 'rkeywordSelect',
+    		 type: 'POST',
+    		 data: {
+    			 keyword_num : $(this).attr('id')
+    		 },
+    		 dataType: 'json',
+    		 success : function(data){
+   			 	$.each(data, function(idx, val) {
+   				 	$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td><a href='#' id='"+val.url+"'>"+val.title+"</a></td> </tr>")
+   			 	});
+    		 },
+    		 error : function(){
+    			 alert("에러!!");
+    		 }
+    	  });
+      });
+		  //<c:forEach items='${articleList}' var='article' varStatus='stat'><tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>${stat.count}</td> <td>${article.title}</td> </tr></c:forEach>
+  }
     </script>  
             <!-- loading jsPanel javascript -->
     <script src="resources/source/jquery.jspanel-compiled.js"></script>
@@ -417,7 +471,6 @@ b{
         }
     })
     $("#dateli").on("click", function(){
-       
         $('#datep').css("display","none");
     })
     
@@ -449,7 +502,7 @@ b{
             border:   "1px solid darkgray",
             content: function(){
                 $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
-                return "<c:forEach items='${realKeywordList}' var='keyword' varStatus='stat'><a href='#' class='a_rank'>${stat}위 : ${keyword.keyword}</a><br/></c:forEach>";
+                return "<c:forEach items='${realKeywordList}' var='keyword' varStatus='stat' begin='0'><a href='#' class='a_realrank'>${stat.count}위 : ${keyword.keyword}</a><br/></c:forEach>";
             },
             callback: function () {
                 this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});
@@ -473,7 +526,7 @@ b{
             content: function(){
                 $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
                 //return "<c:forEach items='${rankingList}' var='keyword' varStatus='stat'>${keyword.keyword} <br/></c:forEach>";
-                return "<c:forEach items='${rankingList}' var='keyword' varStatus='stat'><a href='#' class='a_rank'>${stat}위 : ${keyword.keyword}</a><br/></c:forEach>";
+                return "<c:forEach items='${rankingList}' var='keyword' varStatus='stat' begin='0'><a href='#' class='a_rank' id='${keyword.keyword_num}'>${stat.count}위 : ${keyword.keyword}</a><br/></c:forEach>";
             },
             callback: function () {
                 this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});
@@ -481,7 +534,6 @@ b{
                 
             }
         });
-        
         
         var panel4 = $.jsPanel({
             position:    {my: "right-top", at: "right-top", offsetY: 85 , offsetX :-15},
@@ -516,7 +568,7 @@ b{
             border:   "1px solid darkgray",
             content: function(){
                 $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
-                return "   <div id = 'articleList'><table id = 'articleTable'><tr><th>번 호</th>  <th>기사 제목</th>  </tr><c:forEach items='${articleList}' var='article' varStatus='stat'><tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>${stat.count}</td> <td>${article.title}</td> </tr></c:forEach></table></div>";
+                return "<div id = 'articleList'><table id = 'articleTable'><tr><th>번 호</th><th>기사 제목</th></tr></table></div>";
             },
             callback: function () {
                 this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" });
@@ -525,6 +577,7 @@ b{
                 
             }
         });
+        
         
         var panel5 = $.jsPanel({
             paneltype:   'modal',

@@ -20,9 +20,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import sesoc.global.keyworld.dao.CustomerRepository;
 import sesoc.global.keyworld.dao.KeywordRepository;
+import sesoc.global.keyworld.vo.Article;
 import sesoc.global.keyworld.vo.Customer;
 import sesoc.global.keyworld.vo.Keyword;
 import sesoc.global.keyworld.vo.RankKeyword;
@@ -128,8 +131,10 @@ public class CustomerController {
 		model.addAttribute("article",article);
 		System.out.println(keywordList.toString());*/
 		model.addAttribute("rankingList", rankingList);
+		System.out.println(rankingList.toString());
 		model.addAttribute("realKeywordList", realKeywordList);
-		
+		System.out.println(realKeywordList.toString());
+		System.out.println("222222222222222222222");
 		model.addAttribute("keyList", keywordList);
 		//모델 혹은 리퀘스트는 두 페이지 사이에서만 사용된다. redirect를 하면 모델은 사라지지만 세션은 살아있다. 
 		return "mainForm2";
@@ -138,7 +143,16 @@ public class CustomerController {
 		/*return "index";*/
 		
 	}
-	
+	@RequestMapping(value = "rkeywordSelect", method = RequestMethod.POST)
+	public @ResponseBody List<Article> articleList(Locale locale, Model model,@RequestParam(value="keyword_num") int keyword_num) {
+	System.out.println("들어옴2");
+	System.out.println(keyword_num);
+	List<Article> articleList = repok.selectArticleFromKeyword(keyword_num);
+	System.out.println("조회완료 : "+articleList.toString());
+	System.out.println("111111");
+		
+	return articleList;
+	}
 	@RequestMapping("/logout")
 	public String logout(HttpSession session){
 		session.invalidate();

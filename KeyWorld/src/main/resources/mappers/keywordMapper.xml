@@ -7,15 +7,16 @@
 	
 
 	<select id = "selectKeyword"  resultType="Keyword">
-		select t.keyword_num, t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude
+		select t.keyword_num, t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude, t.point point
 		from
-			(SELECT nation_num,keyword, keyword_num 
+			(SELECT nation_num,keyword, keyword_num, point
 			FROM
 				(SELECT nation_num,
         			(SELECT us_keyword FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword,
         			(SELECT keyword_num FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword_num,
         			COUNT(*) count,
-        			ROW_NUMBER() OVER(PARTITION BY nation_num ORDER BY COUNT(*) DESC) rank
+        			ROW_NUMBER() OVER(PARTITION BY nation_num ORDER BY COUNT(*) DESC) rank,
+        			AVG(ar.emotion_point) point
   					FROM used_keyword uk, used_location ul, article ar, location lo
 					WHERE uk.article_num = ar.article_num
 					AND ar.article_num = ul.article_num
@@ -44,11 +45,38 @@
 	
 	<select id = "selectRealKeyword"  resultType="RealKeyword">
 	<![CDATA[
-		select realtime_num,realtime_word, to_char(realtime_date,'YYYY/MM/DD HH24:mm') 
+		select realtime_num ,realtime_word keyword, to_char(realtime_date,'YYYY/MM/DD HH24:mm') realTime
 		from realtime_word 
 		where rownum<11 
 		order by realtime_date desc
 	]]>
 	</select>
+	
+	<select id = "selectArticleFromKeyword" parameterType="int" resultType="Article">
+	<![CDATA[
+		select aan article_num,
+	 			adn division_num, 
+				at title, 
+				atext text, 
+				awd writed_date, 
+				aep emotion_point, 
+				url 
+		from 
+				(select ar.article_num aan,
+					 ar.division_num adn, 
+					ar.title at, 
+					ar.text atext, 
+					to_char(ar.writed_date,'YYYY/MM/DD') awd,
+					ar.emotion_point aep, 
+					ar.url url
+				from article ar, 
+					used_keyword uk 
+				where uk.keyword_num = #{keyword_num} 
+				and ar.article_num=uk.article_num 
+				order by writed_date desc) 
+		where rownum < 9
+	]]>
+	</select>
+	
 	
 </mapper>
