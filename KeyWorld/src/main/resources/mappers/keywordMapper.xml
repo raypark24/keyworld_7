@@ -5,14 +5,6 @@
 
 <mapper namespace="sesoc.global.keyworld.dao.KeywordDAO">
 	
-	<select id = "selectRanking" resultType="RankKeyword"> 
-		select ukn.keyword_num keyword_num, k.us_keyword keyword 
-		from 
-			(select uk.keyword_num, count(uk.keyword_num) from used_keyword uk group by uk.keyword_num order by count(uk.keyword_num) desc) ukn,
-			keyword k 
-		where rownum=1 
-		and ukn.keyword_num = k.keyword_num 
-	</select> 
 
 	<select id = "selectKeyword"  resultType="Keyword">
 		select t.keyword_num, t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude
@@ -37,5 +29,16 @@
 				 ) cap
   			where cap.nation_num = t.nation_num
 	</select>
+	
+	<select id = "selectKeyword"  resultType="RankKeyword">
+		select ukn.keyword_num keyword_num, k.us_keyword keyword 
+		from 
+			(select uk.keyword_num, count(uk.keyword_num) from used_keyword uk group by uk.keyword_num order by count(uk.keyword_num) desc) ukn,
+			keyword k 
+		where rownum=1 
+		and ukn.keyword_num = k.keyword_num
+	</select>
+	
+	
 	
 </mapper>

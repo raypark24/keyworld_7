@@ -44,6 +44,12 @@ public class CustomerController {
 	Class<Charset> c = Charset.class;
 	private String rankKeyword;
 	private Object realKeyword;
+	
+	
+	public CustomerController() {
+		super();
+	}
+
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 		
@@ -70,7 +76,6 @@ public class CustomerController {
 		List<Keyword> keywordList = repok.selectKeyword();
 		System.out.println(keywordList.toString());
 		System.out.println("11");
-		List<RankKeyword> rankingList = repok.selectKeywordRanking();
 		
 		
 		
@@ -120,11 +125,9 @@ public class CustomerController {
 		model.addAttribute("realKeyword",realKeyword);
 		model.addAttribute("article",article);
 		System.out.println(keywordList.toString());
-		System.out.println(rankingList.toString());
 		
 		
 		model.addAttribute("keyList", keywordList);
-		model.addAttribute("rankingList",rankingList);
 		//모델 혹은 리퀘스트는 두 페이지 사이에서만 사용된다. redirect를 하면 모델은 사라지지만 세션은 살아있다. 
 		return "mainForm2";
 		

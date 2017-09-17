@@ -8,6 +8,5 @@ import sesoc.global.keyworld.vo.RankKeyword;
 public interface KeywordDAO {
 	
 	public List<Keyword> selectKeyword();
-	public List<RankKeyword> selectRanking();
-
+	public List<RankKeyword> selectRankKeyword();
 }
