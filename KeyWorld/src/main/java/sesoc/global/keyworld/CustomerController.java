@@ -68,6 +68,7 @@ public class CustomerController {
 		session.setAttribute("name", customer.getUser_name());
 		
 		List<Keyword> keywordList = repok.selectKeyword();
+		System.out.println(keywordList.toString());
 		System.out.println("11");
 		List<RankKeyword> rankingList = repok.selectKeywordRanking();
 		

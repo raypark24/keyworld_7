@@ -24,5 +24,4 @@ public class RankKeyword {
 	public String toString() {
 		return "RankKeyword [keyword_num=" + keyword_num + ", keyword=" + keyword + "]";
 	}
-	
 }
