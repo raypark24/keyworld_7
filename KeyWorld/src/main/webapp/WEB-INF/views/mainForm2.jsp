@@ -341,7 +341,8 @@ b.redtext{
        <script src="http://www.webglearth.com/v2/api.js"></script>
   <script>
   function initialize() {
-	 
+	  
+	  
      var earth = new WE.map('earth_div', {tilting:false, sky: true, atmosphere: true});
       var natural = WE.tileLayer('http://data.webglearth.com/natural-earth-color/{z}/{x}/{y}.jpg', {
           tileSize: 256,
@@ -400,9 +401,9 @@ b.redtext{
     	 $(this).css('z-index','200000');
       });
       $(".we-pp").mouseout(function(){
-    	 $(".we-pp-wrapper").css('z-index','50000');
-    	 $(".we-pp-content").css('z-index','50000');
-    	 $(this).css('z-index','50000');
+    	 $(".we-pp-wrapper").css('z-index','0');
+    	 $(".we-pp-content").css('z-index','0');
+    	 $(this).css('z-index','0');
       });
       
       $(".a_rank").click(function(){
@@ -429,6 +430,7 @@ b.redtext{
   }
   
   function articleDetail(inputUrl,inputDivision_num){
+	  
 	  var url = inputUrl;
 	  var division_num = inputDivision_num;
 	  // 파이썬 통신 후 html 태그들 가져와서 뿌리기.
@@ -470,7 +472,8 @@ b.redtext{
     		           headerTitle: "Article",
     		           border:   "1px solid darkgray",
     		           content: function(){
-    		               $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
+    		               $(this).css('background-color','rgba(0,0,0,' + 0.8 + ')');
+    		               $(this).css('z-index','120000');
     		               return result;
     		           },
     		           headerControls: {
@@ -483,9 +486,9 @@ b.redtext{
     		               disabled: false
     		           },
     		           callback: function () {
-    		               this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" });
+    		               this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)","z-index":"120000", fontStyle: "italic" });
     		    
-    		               this.content.css({"font-size": "16px","padding": "15px"});
+    		               this.content.css({"font-size": "16px","padding": "15px","z-index":"120000"});
     		           }
     		       });
     		 },

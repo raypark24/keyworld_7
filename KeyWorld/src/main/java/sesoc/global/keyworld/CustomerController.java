@@ -135,7 +135,7 @@ public class CustomerController {
 		return "redirect:/";
 	}
 	
-	@RequestMapping(value = "articleDetail", method = RequestMethod.POST)
+	@RequestMapping(value = "articleDetail", produces="application/test;charset=utf8", method = RequestMethod.POST)
 	public @ResponseBody String articleDetail(
 			Locale locale,
 			Model model,
@@ -167,13 +167,14 @@ public class CustomerController {
 		out.write(url);
 		out.flush();
 		System.out.println("url 전송 완료!!");
-		Thread.sleep(1500);
+		Thread.sleep(2500);
 		while(stdIn.ready()){
 			in+=stdIn.readLine();
 		}
 		articleHtml = in;
 		System.out.println(articleHtml);
-		articleHtml = new String(articleHtml.getBytes(),"utf-8");
+		
+		//articleHtml = new String(articleHtml.getBytes(),"utf-8");
 		stdIn.close();
 		out.close();
 		socket.close();
