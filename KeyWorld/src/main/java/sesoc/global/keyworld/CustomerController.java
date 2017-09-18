@@ -90,32 +90,7 @@ public class CustomerController {
 			keyList.add(k);
 			
 		}*/
-		/*try {
-			socket = new Socket("localhost",9999);
-		} catch(Exception e){
-			e.printStackTrace();
-		}
-		try{
-			BufferedReader stdIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			BufferedWriter out = new BufferedWriter(new PrintWriter(socket.getOutputStream(),true));
-			System.out.println("Trying to read...");
-			String in = "";
-			out.write("1");
-			out.flush();
-			System.out.println("1");
-			Thread.sleep(1500);
-			while(stdIn.ready()){
-				in+=stdIn.readLine();
-			}
-			rankKeyword = in;
-			System.out.println(rankKeyword);
-			rankKeyword = new String(rankKeyword.getBytes(),"utf-8");
-			stdIn.close();
-			out.close();
-			socket.close();
-		}catch(Exception e){
-			e.printStackTrace();
-		}*/
+		
 		/*rankKeyword = rankKeyword.replaceAll("\\,", "");
 		rankKeyword = rankKeyword.replaceAll("echo : ", "");
 		String[] keyword2 = rankKeyword.split("ppp");
@@ -158,7 +133,59 @@ public class CustomerController {
 		session.invalidate();
 		
 		return "redirect:/";
-		
 	}
+	
+	@RequestMapping(value = "articleDetail", method = RequestMethod.POST)
+	public @ResponseBody String articleDetail(
+			Locale locale,
+			Model model,
+			@RequestParam(value="url") String url,
+			@RequestParam(value="division_num") int division_num) {
+	String articleHtml="";
+	System.out.println("들어옴2");
+	System.out.println(url);
+	System.out.println(division_num);
+	/*if(url.equals("")){
+		return null;
+	}*/
+	
+	// 크롤링 하기 전 사전작업. text한번만 날리기 때문에, url + ppp(구분자) + division_num 을 날린다.
+	url = url + "ppp" + division_num;
+	System.out.println("최종 송신 데이터 : " + url);
+	
+	// 크롤링.
+	try {
+		socket = new Socket("localhost",9999);
+	} catch(Exception e){
+		e.printStackTrace();
+	}
+	try{
+		BufferedReader stdIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		BufferedWriter out = new BufferedWriter(new PrintWriter(socket.getOutputStream(),true));
+		System.out.println("Trying to read...");
+		String in = "";
+		out.write(url);
+		out.flush();
+		System.out.println("url 전송 완료!!");
+		Thread.sleep(1500);
+		while(stdIn.ready()){
+			in+=stdIn.readLine();
+		}
+		articleHtml = in;
+		System.out.println(articleHtml);
+		articleHtml = new String(articleHtml.getBytes(),"utf-8");
+		stdIn.close();
+		out.close();
+		socket.close();
+	}catch(Exception e){
+		e.printStackTrace();
+	}
+	
+	System.out.println("기사1개 크롤링완료 : "+articleHtml);
+	
+	return articleHtml;
+	}
+	
+	
 	
 }

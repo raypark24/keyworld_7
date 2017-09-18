@@ -172,10 +172,10 @@ margin: 0 3px 0 0
 }
 
 .we-pp-wrapper{
-	background-color : rgba(255,255,255,0.2) !important;
+	background-color : rgba(255,255,255,0.1) !important;
 }
 .we-pp{
-	position : relative !important;
+	
 }
 .we-pp-wrapper:hover{
 	background-color : rgba(255,255,255,1) !important;
@@ -357,13 +357,13 @@ b.redtext{
      
       <c:forEach items="${keyList}" var="keyword">
   		<c:if test="${keyword.point eq null}">
-			WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px; z-index:50000'><b class='blacktext'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 100, closeButton: true}).openPopup();
+			WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='blacktext'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
 		</c:if>
       	<c:if test="${keyword.point > 0}">
-      		WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px; z-index:50000'><b class='bluetext'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 100, closeButton: true}).openPopup();
+      		WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='bluetext'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
       	</c:if>
       	<c:if test="${keyword.point < 0}">
-  			WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px; z-index:50000'><b class='redtext'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 100, closeButton: true}).openPopup();
+  			WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='redtext'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
   		</c:if>
       </c:forEach>
       
@@ -394,12 +394,14 @@ b.redtext{
       
       $(".we-pp-tip").removeAttr("background");
       $(".we-pp-wrapper").removeAttr("background");
-      $(".we-pp").mouseenter(function(){
+      $(".we-pp").mouseover(function(){
     	 $(".we-pp-wrapper").css('z-index','200000');
+    	 $(".we-pp-content").css('z-index','200000');
     	 $(this).css('z-index','200000');
       });
       $(".we-pp").mouseout(function(){
     	 $(".we-pp-wrapper").css('z-index','50000');
+    	 $(".we-pp-content").css('z-index','50000');
     	 $(this).css('z-index','50000');
       });
       
@@ -415,7 +417,7 @@ b.redtext{
     		 dataType: 'json',
     		 success : function(data){
    			 	$.each(data, function(idx, val) {
-   				 	$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td><a href='#' id='"+val.url+"'>"+val.title+"</a></td> </tr>")
+   				 	$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+");' id='"+val.url+"'>"+val.title+"</a></td> </tr>")
    			 	});
     		 },
     		 error : function(){
@@ -425,6 +427,76 @@ b.redtext{
       });
 		  //<c:forEach items='${articleList}' var='article' varStatus='stat'><tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>${stat.count}</td> <td>${article.title}</td> </tr></c:forEach>
   }
+  
+  function articleDetail(inputUrl,inputDivision_num){
+	  var url = inputUrl;
+	  var division_num = inputDivision_num;
+	  // 파이썬 통신 후 html 태그들 가져와서 뿌리기.
+	   $.ajax({
+    		 url: 'articleDetail',
+    		 type: 'POST',
+    		 data: {
+    			 url : url,
+    			 division_num : division_num
+    		 },
+    		 dataType: 'text',
+    		 success : function(result){
+    			 alert("기사1개크롤링 성공!");
+    			 var panel5 = $.jsPanel({
+    		          paneltype:   'modal',
+    		           position:    {my: "center", at: "center"},
+    		           contentOverflow: 'scroll',
+    		           theme: 'black filled',
+    		           contentSize: {width: 1000, height: 600},
+    		           headerToolbar: [
+    		               {
+    		                   item:     "<span class='fa fa-bars' style='cursor:pointer;'>",
+    		                   event:    "click",
+    		                   callback: function (event) {event.data.content.append("<p>You clicked on the menu ...</p>"); }
+    		               },
+    		               {
+    		                   item:     "<span class='fa fa-cog' style='cursor:pointer;margin-left:5px;'>",
+    		                   event:    "click",
+    		                   callback: function (event) {event.data.content.append("<p>You clicked on the tools this time ...</p>"); }
+    		               },
+    		               {
+    		                   item:     "<span class='fa fa-sign-in' style='cursor:pointer;margin-left:5px;'>",
+    		                   event:    "click",
+    		                   callback: function (event) {event.data.content.append("<p>Logout ...</p>"); }
+    		               }
+    		           ],
+    		           
+    		           show: "jsPanelFadeIn",  
+    		           headerTitle: "Article",
+    		           border:   "1px solid darkgray",
+    		           content: function(){
+    		               $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
+    		               return result;
+    		           },
+    		           headerControls: {
+    		           
+    		                controls : 'all',
+    		                   minimize : 'remove'
+    		               
+    		           },
+    		           dragit: {
+    		               disabled: false
+    		           },
+    		           callback: function () {
+    		               this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" });
+    		    
+    		               this.content.css({"font-size": "16px","padding": "15px"});
+    		           }
+    		       });
+    		 },
+    		 error : function(){
+    			 alert("에러!!");
+    		 }
+    	}); 
+	  
+	  
+  }
+  
     </script>  
             <!-- loading jsPanel javascript -->
     <script src="resources/source/jquery.jspanel-compiled.js"></script>
@@ -473,6 +545,7 @@ b.redtext{
     $("#dateli").on("click", function(){
         $('#datep').css("display","none");
     })
+    
     
           
           
@@ -579,53 +652,7 @@ b.redtext{
         });
         
         
-        var panel5 = $.jsPanel({
-            paneltype:   'modal',
-             position:    {my: "center", at: "center"},
-             contentOverflow: 'scroll',
-             theme: 'black filled',
-             contentSize: {width: 1000, height: 600},
-             headerToolbar: [
-                 {
-                     item:     "<span class='fa fa-bars' style='cursor:pointer;'>",
-                     event:    "click",
-                     callback: function (event) {event.data.content.append("<p>You clicked on the menu ...</p>"); }
-                 },
-                 {
-                     item:     "<span class='fa fa-cog' style='cursor:pointer;margin-left:5px;'>",
-                     event:    "click",
-                     callback: function (event) {event.data.content.append("<p>You clicked on the tools this time ...</p>"); }
-                 },
-                 {
-                     item:     "<span class='fa fa-sign-in' style='cursor:pointer;margin-left:5px;'>",
-                     event:    "click",
-                     callback: function (event) {event.data.content.append("<p>Logout ...</p>"); }
-                 }
-             ],
-             
-             show: "jsPanelFadeIn",  
-             headerTitle: "Article",
-             border:   "1px solid darkgray",
-             content: function(){
-                 $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
-                 return "취직 시켜주세요";
-             },
-             headerControls: {
-             
-                  controls : 'all',
-                     minimize : 'remove'
-                 
-             },
-             dragit: {
-                 disabled: false
-             },
-             callback: function () {
-                 this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" });
-      
-                 this.content.css({"font-size": "16px","padding": "15px"});
-                 
-             }
-         });
+        
         
 /*    var arr = [
     {
