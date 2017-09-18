@@ -167,7 +167,7 @@ public class CustomerController {
 		out.write(url);
 		out.flush();
 		System.out.println("url 전송 완료!!");
-		Thread.sleep(2500);
+		Thread.sleep(5000);
 		while(stdIn.ready()){
 			in+=stdIn.readLine();
 		}

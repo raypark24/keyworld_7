@@ -151,23 +151,23 @@ button.Zebra_DatePicker_Icon2 {
     line-height: 0;
     vertical-align: top;
     display: inline;
-    zoom: 1
+    zoom: 1;
 }
 
 button.Zebra_DatePicker_Icon_Disabled {
-background-image: url('resources/css/calendar-disabled.png')
+background-image: url('resources/css/calendar-disabled.png');
 
 }
 
 /* don't set vertical margins! */
 
 button.Zebra_DatePicker_Icon {
-margin: 0 0 0 3px
+margin: 0 0 0 3px;
 
 }
 
 button.Zebra_DatePicker_Icon_Inside {
-margin: 0 3px 0 0
+margin: 0 3px 0 0;
 
 }
 
@@ -354,35 +354,22 @@ b.redtext{
           opacity: 0.7
       }).addTo(earth);
      
-
      
       <c:forEach items="${keyList}" var="keyword">
   		<c:if test="${keyword.point eq null}">
-			WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='blacktext'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
+			WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='blacktext' id='${keyword.keyword_num}'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
 		</c:if>
       	<c:if test="${keyword.point > 0}">
-      		WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='bluetext'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
+      		WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='bluetext' id='${keyword.keyword_num}'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
       	</c:if>
       	<c:if test="${keyword.point < 0}">
-  			WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='redtext'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
+  			WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='redtext' id='${keyword.keyword_num}'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
   		</c:if>
       </c:forEach>
       
-      var marker = WE.marker([51.5, -0.09],'', 15, 15).addTo(earth);
-      var marker0 = WE.marker([51, -0.09],'resources/css/marker00.png', 10, 10).addTo(earth);
-      var marker1 = WE.marker([52, -0.09],'resources/css/marker01.png', 10, 10).addTo(earth);
-      var marker2 = WE.marker([53, -0.09],'resources/css/marker02.png', 10, 10).addTo(earth);
-      var marker3 = WE.marker([54, -0.09],'resources/css/marker03.png', 10, 10).addTo(earth);
-      var marker4 = WE.marker([55, -0.09],'resources/css/marker04.png', 10, 10).addTo(earth);
-      var marker5 = WE.marker([56, -0.09],'resources/css/marker05.png', 10, 10).addTo(earth);
-      var marker6 = WE.marker([57, -0.09],'resources/css/marker06.png', 10, 10).addTo(earth);
-      var marker7 = WE.marker([58, -0.09],'resources/css/marker07.png', 10, 10).addTo(earth);
-      var marker8 = WE.marker([59, -0.09],'resources/css/marker08.png', 10, 10).addTo(earth);
-      var marker9 = WE.marker([60, -0.09],'resources/css/marker09.png', 10, 10).addTo(earth);
+      
       
       marker.bindPopup("<b>영국</b><br>냉장고 폭발<br />", {maxWidth: 150, closeButton: true}).openPopup();
-
-     
       marker2.bindPopup("<b>Cairo</b><br>Yay, you found me!", {maxWidth: 20, closeButton: false});
 
       //var markerCustom = WE.marker([50, -20], '/img/logo-webglearth-white-100.png', 100, 24).addTo(earth);
@@ -400,6 +387,29 @@ b.redtext{
     	 $(".we-pp-content").css('z-index','200000');
     	 $(this).css('z-index','200000');
       });
+      
+      $(".we-pp-wrapper").click(function(){
+    	  $("#articleTable").html("<tr><th>번 호</th><th>기사 제목</th></tr>");
+    	  var text = $(this).children().children().children().first().attr("id");
+    	  $.ajax({
+     		 url: 'rkeywordSelect',
+     		 type: 'POST',
+     		 data: {
+     			 keyword_num : text
+     		 },
+     		 dataType: 'json',
+     		 success : function(data){
+    			 	$.each(data, function(idx, val) {
+    				 	$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+");' id='"+val.url+"'>"+val.title+"</a></td> </tr>")
+    			 	});
+     		 },
+     		 error : function(){
+     			 alert("에러!!");
+     		 }
+     	  });
+      });
+      
+      
       $(".we-pp").mouseout(function(){
     	 $(".we-pp-wrapper").css('z-index','0');
     	 $(".we-pp-content").css('z-index','0');
@@ -407,6 +417,7 @@ b.redtext{
       });
       
       $(".a_rank").click(function(){
+    	  alert("a");
     	  $("#articleTable").html("<tr><th>번 호</th><th>기사 제목</th></tr>");
     	  var s = $(this).attr('id');
     	  $.ajax({
@@ -425,8 +436,9 @@ b.redtext{
     			 alert("에러!!");
     		 }
     	  });
+    	  $(".we-pp").css("display","None");
+
       });
-		  //<c:forEach items='${articleList}' var='article' varStatus='stat'><tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>${stat.count}</td> <td>${article.title}</td> </tr></c:forEach>
   }
   
   function articleDetail(inputUrl,inputDivision_num){
@@ -443,7 +455,6 @@ b.redtext{
     		 },
     		 dataType: 'text',
     		 success : function(result){
-    			 alert("기사1개크롤링 성공!");
     			 var panel5 = $.jsPanel({
     		          paneltype:   'modal',
     		           position:    {my: "center", at: "center"},
@@ -550,10 +561,6 @@ b.redtext{
     })
     
     
-          
-          
-            
-          
         
    })//function
         
