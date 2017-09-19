@@ -1,6 +1,7 @@
 package sesoc.global.keyworld.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import sesoc.global.keyworld.vo.Article;
 import sesoc.global.keyworld.vo.Keyword;
+import sesoc.global.keyworld.vo.Menu;
 import sesoc.global.keyworld.vo.RankKeyword;
 import sesoc.global.keyworld.vo.RealKeyword;
 
@@ -52,6 +54,32 @@ public class KeywordRepository {
 		List<Article> articleList = dao.selectArticleFromKeyword(keyword_num);
 		
 		return articleList;
+	}
+	
+	public List<Keyword> keywordFilter(Map<String,String> map) {
+		
+		KeywordDAO dao = sqlSession.getMapper(KeywordDAO.class);
+		
+		List<Keyword> keywordList = dao.keywordFilter(map);
+		
+		return keywordList;
+	}
+	public List<Menu> selectDivision(int nationNum) {
+		System.out.println("21212121");
+		KeywordDAO dao = sqlSession.getMapper(KeywordDAO.class);
+		System.out.println("23232323");
+		List<Menu> dList = dao.selectDivision(nationNum);
+		
+		return dList;
+	}
+	
+	public List<Menu> selectBroadcast(int nationNum) {
+		System.out.println("21212121");
+		KeywordDAO dao = sqlSession.getMapper(KeywordDAO.class);
+		System.out.println("23232323");
+		List<Menu> bList = dao.selectBroadcast(nationNum);
+		
+		return bList;
 	}
 
 }

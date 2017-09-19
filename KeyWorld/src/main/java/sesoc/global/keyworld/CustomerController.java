@@ -7,8 +7,10 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.servlet.http.HttpSession;
@@ -28,6 +30,7 @@ import sesoc.global.keyworld.dao.KeywordRepository;
 import sesoc.global.keyworld.vo.Article;
 import sesoc.global.keyworld.vo.Customer;
 import sesoc.global.keyworld.vo.Keyword;
+import sesoc.global.keyworld.vo.Menu;
 import sesoc.global.keyworld.vo.RankKeyword;
 import sesoc.global.keyworld.vo.RealKeyword;
 
@@ -167,7 +170,7 @@ public class CustomerController {
 		out.write(url);
 		out.flush();
 		System.out.println("url 전송 완료!!");
-		Thread.sleep(5000);
+		Thread.sleep(4000);
 		while(stdIn.ready()){
 			in+=stdIn.readLine();
 		}
@@ -186,7 +189,49 @@ public class CustomerController {
 	
 	return articleHtml;
 	}
+	// nationNum,broadcastName,broadcastNum,divisionName,divisionNum
 	
+	@RequestMapping(value = "/blist", method = RequestMethod.GET)
+	public @ResponseBody List<Menu> blist(int nationNum) {
+		System.out.println("menu에 들어옴.");
+		System.out.println(nationNum);
+		
+		List<Menu> blist = repok.selectBroadcast(nationNum);
+		
+		return blist;
+	}
 	
+	@RequestMapping(value = "/dlist", method = RequestMethod.GET)
+	public @ResponseBody List<Menu> dlist(int nationNum) {
+		System.out.println("menu에 들어옴.");
+		System.out.println(nationNum);
+		List<Menu> dlist = repok.selectDivision(nationNum);
+		
+		
+		return dlist;
+	}
+	
+	@RequestMapping(value = "keywordFilter", method = RequestMethod.POST)
+	public @ResponseBody List<Keyword> keywordFilter(
+						Locale locale, 
+						Model model,
+						@RequestParam(value="nationNum") int nationNum,
+						@RequestParam(value="broadcastNum") int broadcastNum,
+						@RequestParam(value="divisionNum") int divisionNum,
+						@RequestParam(value="fromDate") String fromDate ,
+						@RequestParam(value="toDate") String toDate
+						) {
+	Map<String,String> map = new HashMap<String, String>();
+	map.put("nation_num", nationNum+"");
+	map.put("broadcast_num", broadcastNum+"");
+	map.put("division_num", divisionNum+"");
+	map.put("fromDate", fromDate);
+	map.put("toDate", toDate);
+	System.out.println("키워드 필터링");
+	List<Keyword> articleList = repok.keywordFilter(map);
+	System.out.println("조회완료 : "+articleList.toString());
+		
+	return articleList;
+	}
 	
 }

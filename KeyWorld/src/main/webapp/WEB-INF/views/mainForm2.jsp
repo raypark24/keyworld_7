@@ -201,6 +201,10 @@ b.redtext{
 .a_realrank:hover{
 	color : #fed136 !important;
 }
+.title_a{
+	color : white !important;
+}
+
 
 /*#datep{
     display: block;
@@ -217,63 +221,56 @@ b.redtext{
            
             <ul id="main-menu" class="sm sm-simple">
             
-                <li><a href="#" class = "topli">Nation</a>
-                <ul>
+                <li><a href="#" ><div id = "nation">Nation</div></a>
+                <ul class = 'nation'>
                 <li><a href="#">Asia</a>
                     <ul>
-                        <li><a href="#">Korea</a></li>
-                        <li><a href="#">Japan</a></li>
-                        <li><a href="#">China</a></li>
+                        <li><a href="#"><input type="radio" name="radio1" id="Korea" value="216"><label for = "Korea">Korea</label></a></li>
+                        <li><a href="#"><input type="radio" name="radio1" id="Japan" value="222"><label for = "Japan">Japan</label></a></li>
+                        <li><a href="#"><input type="radio" name="radio1" id="China" value="39"><label for = "China">China</label></a></li>
+                         <li><a href="#"><input type="radio" name="radio1" id="Singapore" value="138"><label for = "Singapore">Singapore</label></a></li>
+                        <li><a href="#"><input type="radio" name="radio1" id="Philippines" value="159"><label for = "Philippines">Philippines</label></a></li>
                     </ul>
                 </li>
-                <li><a href="#">Noth America</a>
+                <li><a href="#">America</a>
                     <ul>
-                        <li><a href="#">United States of America</a></li>
-                        <li><a href="#">Mexico</a></li>
-                        <li><a href="#">Canada</a></li>
+                        <li><a href="#"><input type="radio" name="radio1" id="USA" value="104"><label for = "USA">USA</label></a></li>
+                        <li><a href="#"><input type="radio" name="radio1" id="Canada" value="33"><label for = "Canada">Canada</label></a></li>
                     </ul>
                 </li>
-                <li><a href="#">Africa</a>
+                <li><a href="#">Oceania</a>
                     <ul>
-                <li><a href="#">A</a></li>
-                <li><a href="#">B</a></li>
-                <li><a href="#">C</a></li>
+                <li><a href="#"><input type="radio" name="radio1" id="radio1" value="12"><label for = "Australia">Australia</label></a></li>
+                <li><a href="#"><input type="radio" name="radio1" id="radio1" value="174"><label for = "New Zealand">New Zealand</label></a></li>
+                
                 
                 </ul>
                     </li>
                 <li><a href="#">Europe</a>
                       <ul>
-                <li><a href="#">A</a></li>
-                <li><a href="#">B</a></li>
-                <li><a href="#">C</a></li>
+                <li><a href="#"><input type="radio" name="radio1" id="England" value="105"><label for = "England">England</label></a></li>
+               
                 
                 </ul>
                     </li>
                 </ul> 
-                    <li><a href="#" class = "topli">Publisher</a>
-                <ul>
-                <li><a href="#">Jungang</a></li>
-                <li><a href="#">Chosun</a></li>
-                
-                </ul>
+                    <li><a href="#" ><div id = "broadcast">Broadcast</div></a>
+               <ul id = "broadcastList">
+               <!-- 
+               <li><a href="#"><input type="radio" name="radio2" id="'+item.broadcastName+'"value="'+item.broadcastNum+'"><label for = "'+ item.broadcastName +'">'+ item.broadcastName + '</label></a></li>
+               -->
+               </ul>
                 </li>
                 
-                <li><a href="#" class = "topli">Category</a>
-                <ul>
-                <li><a href="#">domestic</a></li>
-                <li><a href="#">world</a></li>
-                <li><a href="#">economy</a></li>
-                <li><a href="#">entertainment</a></li>
-                <li><a href="#">sports</a></li>
-                <li><a href="#">computer</a></li>
-                <li><a href="#">science</a></li>
-                <li><a href="#">local</a></li>
-                </ul>
+                <li ><a href="#" ><div id = "division">Division</div></a>
+               <ul id = "divisionList">
+               
+               </ul>
                 
                 
                 </li>
 
-                <li><a href="#"  id = dateli>Date</a>
+                <li><a href="#">Date</a>
                 <ul id = "datep">
                     
                     <li class = "ddli">
@@ -343,7 +340,7 @@ b.redtext{
   function initialize() {
 	  
 	  
-     var earth = new WE.map('earth_div', {tilting:false, sky: true, atmosphere: true});
+     var earth = new WE.map('earth_div', {'tilting':false, 'sky': true, 'atmosphere': true});
       var natural = WE.tileLayer('http://data.webglearth.com/natural-earth-color/{z}/{x}/{y}.jpg', {
           tileSize: 256,
           tms: true
@@ -354,6 +351,7 @@ b.redtext{
           opacity: 0.7
       }).addTo(earth);
      
+      
      
       <c:forEach items="${keyList}" var="keyword">
   		<c:if test="${keyword.point eq null}">
@@ -369,8 +367,7 @@ b.redtext{
       
       
       
-      marker.bindPopup("<b>영국</b><br>냉장고 폭발<br />", {maxWidth: 150, closeButton: true}).openPopup();
-      marker2.bindPopup("<b>Cairo</b><br>Yay, you found me!", {maxWidth: 20, closeButton: false});
+
 
       //var markerCustom = WE.marker([50, -20], '/img/logo-webglearth-white-100.png', 100, 24).addTo(earth);
 
@@ -400,7 +397,7 @@ b.redtext{
      		 dataType: 'json',
      		 success : function(data){
     			 	$.each(data, function(idx, val) {
-    				 	$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+");' id='"+val.url+"'>"+val.title+"</a></td> </tr>")
+    				 	$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+");' id='"+val.url+"' class='title_a'>"+val.title+"</a></td> </tr>")
     			 	});
      		 },
      		 error : function(){
@@ -409,7 +406,6 @@ b.redtext{
      	  });
       });
       
-      
       $(".we-pp").mouseout(function(){
     	 $(".we-pp-wrapper").css('z-index','0');
     	 $(".we-pp-content").css('z-index','0');
@@ -417,9 +413,7 @@ b.redtext{
       });
       
       $(".a_rank").click(function(){
-    	  alert("a");
     	  $("#articleTable").html("<tr><th>번 호</th><th>기사 제목</th></tr>");
-    	  var s = $(this).attr('id');
     	  $.ajax({
     		 url: 'rkeywordSelect',
     		 type: 'POST',
@@ -429,14 +423,14 @@ b.redtext{
     		 dataType: 'json',
     		 success : function(data){
    			 	$.each(data, function(idx, val) {
-   				 	$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+");' id='"+val.url+"'>"+val.title+"</a></td> </tr>")
+   				 	$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td class='title_td'><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+");' id='"+val.url+"' class='title_a'>"+val.title+"</a></td> </tr>")
    			 	});
     		 },
     		 error : function(){
     			 alert("에러!!");
     		 }
     	  });
-    	  $(".we-pp").css("display","None");
+    	  //$(".we-pp").css("display","None");
 
       });
   }
@@ -517,8 +511,7 @@ b.redtext{
     <script src="resources/vendor/jquery-ui-touch/jquery.ui.touch-punch.min.js"></script>
       <script type="text/javascript" src="resources/js/zebra_datepicker.min.js"></script>
     <script>
-        var datep1
-        var datep2
+
         
         
       $(function(){
@@ -776,17 +769,115 @@ b.redtext{
 
 <!-- SmartMenus jQuery init -->
 <script type="text/javascript">
-	$(function() {
-		$('#main-menu').smartmenus({
-			mainMenuSubOffsetX: 1,
-			subMenusSubOffsetX: -8,
-			subMenusSubOffsetY: 0,
-            hideTimeout:500
-		});
+$(function() {
+	   $('.nation > li > ul> li > a').on('click', function(){
         
-        
+         if($('input:radio[name=radio1]').is(':checked')){
+            
+             var checked = $('input:radio[name=radio1]:checked').val();
+             var nation = $('input:radio[name=radio1]:checked').attr('id');
+             alert(nation);
+             $("div#nation").empty();
+             $("div#nation").append(nation);
+         
           
+             $.ajax({
+            			url : "blist"
+            			, type : "get"
+            			, data : "nationNum=" + checked
+            			, success : bOutput
+            			, error : function(){
+            				alert("error")
+            			}
+            	}); 
+             
+             $.ajax({
+        			url : "dlist"
+        			, type : "get"
+        			, data : "nationNum=" + checked
+        			, success : dOutput
+        			, error : function(){
+        				alert("error")
+        			}
+        	}); 
+   
+       
+         }       
+     });
+     //disable을 쓸 필요없이 ul안의 list가 전혀 없다가, db를 통해, 불러온다.
+    
+     
+     
+		
+	
+	
+	
+	$('#main-menu').smartmenus({
+		mainMenuSubOffsetX: 1,
+		subMenusSubOffsetX: -8,
+		subMenusSubOffsetY: 0,
+     hideTimeout:500
 	});
+ 
+ 
+   
+});
+
+
+
+function bOutput(resp){//데이터를 받는 것이 성공하면 함수를 실행한다. 
+	var blist = "";
+	
+	$.each(resp, function(index,item){
+		
+		blist += '<li><a href="#" onclick="broadcast();"><input type="radio" name="radio2" id="'+item.broadcastName+'"value="'+item.broadcastNum+'"><label for = "'+ item.broadcastName +'" >'+ item.broadcastName + '</label></a></li>';
+	});
+	$("#broadcastList").empty();
+	$("#broadcastList").append(blist);
+	
+	
+	
+	
+	
+};
+
+function dOutput(resp){//데이터를 받는 것이 성공하면 함수를 실행한다. 
+	
+	var dlist = "";
+	
+	$.each(resp, function(index,item){
+		
+		dlist += '<li><a href="#" onclick="division();"><input type="radio" name="radio3" id="'+item.divisionName+'"value="'+item.divisionNum+'"><label for = "'+ item.divisionName +'">'+ item.divisionName + '</label></a></li>';
+	});
+	$("#divisionList").empty();
+	$("#divisionList").append(dlist);
+	
+	
+	
+};
+
+function division(){
+ alert("dddd")
+if($('input:radio[name=radio3]').is(':checked')){
+  
+  var checked = $('input:radio[name=radio3]:checked').attr("id");
+  
+  $("#division").empty();
+  $("#division").append(checked);
+}       
+};
+
+
+function broadcast(){
+	 alert("dddd")
+if($('input:radio[name=radio2]').is(':checked')){
+	 
+    var checked = $('input:radio[name=radio2]:checked').attr("id");
+    alert(checked)
+    $("#broadcast").empty();
+    $("#broadcast").append(checked);
+}       
+};
 </script>
      
 
