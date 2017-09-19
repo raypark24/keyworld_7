@@ -510,22 +510,28 @@ b.redtext{
     <script src="resources/source/jquery.jspanel-compiled.js"></script>
     <script src="resources/vendor/jquery-ui-touch/jquery.ui.touch-punch.min.js"></script>
       <script type="text/javascript" src="resources/js/zebra_datepicker.min.js"></script>
+    
     <script>
-
-        
-        
+        var datep1
+        var datep2
       $(function(){
-    	 
-          
+         
+         var now = new Date();
+          var year= now.getFullYear();
+          var mon = (now.getMonth()+1)>9 ? ''+(now.getMonth()+1) : '0'+(now.getMonth()+1);
+          var day = now.getDate()>9 ? ''+now.getDate() : '0'+now.getDate();
+          var chan_val = year + '-' + mon + '-' + day;
+
         $('#datepicker-example7-start').Zebra_DatePicker({
-        direction: true,
+        direction: false ,
         default_position: 'below',
         pair: $('#datepicker-example7-end')
     });
         
         $('#datepicker-example7-end').Zebra_DatePicker({
         default_position: 'below',
-        direction: 1
+        direction: true ,
+        direction: [1, chan_val]
     });
           
     
@@ -550,16 +556,22 @@ b.redtext{
         }
     })
     $("#dateli").on("click", function(){
+       
         $('#datep').css("display","none");
     })
-    
-    
+          
+          
+          
+          
+            
+          
         
    })//function
         
      
         
     </script>
+    
     <script>
     $(function(){
             /*실시간 키워드*/
