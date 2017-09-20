@@ -170,7 +170,7 @@ public class CustomerController {
 		out.write(url);
 		out.flush();
 		System.out.println("url 전송 완료!!");
-		Thread.sleep(4000);
+		Thread.sleep(6000);
 		while(stdIn.ready()){
 			in+=stdIn.readLine();
 		}
@@ -215,11 +215,11 @@ public class CustomerController {
 	public @ResponseBody List<Keyword> keywordFilter(
 						Locale locale, 
 						Model model,
-						@RequestParam(value="nationNum") int nationNum,
-						@RequestParam(value="broadcastNum") int broadcastNum,
-						@RequestParam(value="divisionNum") int divisionNum,
-						@RequestParam(value="fromDate") String fromDate ,
-						@RequestParam(value="toDate") String toDate
+						@RequestParam(value="nationNum", defaultValue="0") int nationNum,
+						@RequestParam(value="broadcastNum", defaultValue="0") int broadcastNum,
+						@RequestParam(value="divisionNum", defaultValue="0") int divisionNum,
+						@RequestParam(value="fromDate", defaultValue="0") String fromDate ,
+						@RequestParam(value="toDate", defaultValue="0") String toDate
 						) {
 	Map<String,String> map = new HashMap<String, String>();
 	map.put("nation_num", nationNum+"");
@@ -228,10 +228,10 @@ public class CustomerController {
 	map.put("fromDate", fromDate);
 	map.put("toDate", toDate);
 	System.out.println("키워드 필터링");
-	List<Keyword> articleList = repok.keywordFilter(map);
-	System.out.println("조회완료 : "+articleList.toString());
-		
-	return articleList;
+	List<Keyword> keywordList = repok.keywordFilter(map);
+	System.out.println("필터링완료 : "+keywordList.toString());
+	
+	return keywordList;
 	}
 	
 }

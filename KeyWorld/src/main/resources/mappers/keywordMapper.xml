@@ -105,7 +105,7 @@
 	]]>
 	</select>
 	
-	<!-- 
+	 
 	<select id = "keywordFilter" parameterType="Map" resultType="Keyword">
 	<![CDATA[
 		select t.keyword_num, t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude, t.point point
@@ -122,9 +122,21 @@
 					WHERE uk.article_num = ar.article_num
 					AND ar.article_num = ul.article_num
 					AND ul.location_num = lo.location_num
-					<if test = "nation_num !=
-					AND lo.nation_num = #{nation_num}
-					
+					<if test = "nation_num neq '0' ">
+						AND lo.nation_num = #{nation_num}
+					</if>
+					<if test = "broadcast_num neq '0' ">
+						AND ar.broadcast_num = #{broadcast_num}
+					</if>
+					<if test = "division_num neq '0' ">
+						AND ar.division_num = #{division_num}
+					</if>
+					<if test = "fromDate neq '0'">
+						AND ar.writed_data >= to_date('#{fromDate}','YY-MM-DD')
+					</if>
+					<if test = "toDate neq '0'">
+						AND ar.writed_data <= to_date('#{toDate}','YY-MM-DD')
+					</if>
 					GROUP BY keyword_num, nation_num) WHERE rank=1
 				) t,
 				 (SELECT cap.nation_num as nation_num, 
@@ -135,7 +147,7 @@
   			where cap.nation_num = t.nation_num
   	]]>
 	</select>
-	 -->
+	
 	 
 	<select id = "selectRealKeyword"  resultType="RealKeyword">
 	<![CDATA[

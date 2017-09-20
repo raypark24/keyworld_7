@@ -88,7 +88,7 @@
     position:relative;
     top:0;
         left: 300px;
-    z-index:9999;
+    z-index:200001;
     width:auto;
     
 }
@@ -190,20 +190,21 @@ b.redtext{
 	color : red;
 }
 .a_rank{
-	color : white !important;
+	color : #99FFCC !important;
 }
 .a_realrank{
-	color : white !important;
+	color : #99FFCC !important;
 }
-.a_rank:hover{
+.a_rank:hover, .title_a:hover{
 	color : #fed136 !important;
 }
 .a_realrank:hover{
 	color : #fed136 !important;
 }
 .title_a{
-	color : white !important;
+	color : #99FFCC !important;
 }
+
 
 
 /*#datep{
@@ -534,8 +535,6 @@ b.redtext{
         direction: [1, chan_val]
     });
           
-    
-          
    
     $('#datepicker-example7-start').on("click", function(){
         $('.Zebra_DatePicker.dp_visible').css({"position": "absolute" ,"top": "167px","left": "1168px"}); 
@@ -560,15 +559,9 @@ b.redtext{
         $('#datep').css("display","none");
     })
           
-          
-          
-          
-            
-          
         
    })//function
         
-     
         
     </script>
     
@@ -589,7 +582,7 @@ b.redtext{
             headerTitle: "Realtime Ranking",
             border:   "1px solid darkgray",
             content: function(){
-                $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
+                $(this).css('background-color', 'rgba(0,0,0,' + 0.5 + ')');
                 return "<c:forEach items='${realKeywordList}' var='keyword' varStatus='stat' begin='0'><a href='#' class='a_realrank'>${stat.count}위 : ${keyword.keyword}</a><br/></c:forEach>";
             },
             callback: function () {
@@ -612,7 +605,7 @@ b.redtext{
             headerTitle: "Keyword Ranking",
             border:   "1px solid darkgray",
             content: function(){
-                $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
+                $(this).css('background-color', 'rgba(0,0,0,' + 0.5 + ')');
                 //return "<c:forEach items='${rankingList}' var='keyword' varStatus='stat'>${keyword.keyword} <br/></c:forEach>";
                 return "<c:forEach items='${rankingList}' var='keyword' varStatus='stat' begin='0'><a href='#' class='a_rank' id='${keyword.keyword_num}'>${stat.count}위 : ${keyword.keyword}</a><br/></c:forEach>";
             },
@@ -655,7 +648,7 @@ b.redtext{
             headerTitle: "Article",
             border:   "1px solid darkgray",
             content: function(){
-                $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
+                $(this).css('background-color', 'rgba(0,0,0,' + 0.5 + ')');
                 return "<div id = 'articleList'><table id = 'articleTable'><tr><th>번 호</th><th>기사 제목</th></tr></table></div>";
             },
             callback: function () {
@@ -791,7 +784,7 @@ $(function() {
              alert(nation);
              $("div#nation").empty();
              $("div#nation").append(nation);
-         
+         	 
           
              $.ajax({
             			url : "blist"
@@ -812,14 +805,16 @@ $(function() {
         				alert("error")
         			}
         	}); 
-   
-       
+   			
          }       
      });
      //disable을 쓸 필요없이 ul안의 list가 전혀 없다가, db를 통해, 불러온다.
     
-     
-     
+     $('.nation > li > ul> li ').on('click', function(){
+         
+		    
+    	 
+     });
 		
 	
 	
