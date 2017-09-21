@@ -12,6 +12,7 @@ import sesoc.global.keyworld.vo.Keyword;
 import sesoc.global.keyworld.vo.Menu;
 import sesoc.global.keyworld.vo.RankKeyword;
 import sesoc.global.keyworld.vo.RealKeyword;
+import sesoc.global.keyworld.vo.Scrap;
 
 
 @Repository
@@ -56,10 +57,10 @@ public class KeywordRepository {
 		return articleList;
 	}
 	
-	public List<Keyword> keywordFilter(Map<String,String> map) {
+	public List<Keyword> keywordFilter(Map<String,Integer> map) {
 		
 		KeywordDAO dao = sqlSession.getMapper(KeywordDAO.class);
-		
+		System.out.println(map.toString());
 		List<Keyword> keywordList = dao.keywordFilter(map);
 		
 		return keywordList;
@@ -81,5 +82,24 @@ public class KeywordRepository {
 		
 		return bList;
 	}
-
+	
+	public int insertScrap(Scrap scrap) {
+		
+		KeywordDAO dao = sqlSession.getMapper(KeywordDAO.class);
+		
+		int check = dao.insertScrap(scrap);
+		
+		return check;
+			
+	}
+	
+	public Scrap selectScrapOne(Scrap scrap) {
+		
+		KeywordDAO dao = sqlSession.getMapper(KeywordDAO.class);
+		
+		Scrap sc = dao.selectScrapOne(scrap);
+		
+		return sc;
+		
+	}
 }

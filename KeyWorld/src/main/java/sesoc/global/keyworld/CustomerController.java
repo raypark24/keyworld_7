@@ -33,6 +33,7 @@ import sesoc.global.keyworld.vo.Keyword;
 import sesoc.global.keyworld.vo.Menu;
 import sesoc.global.keyworld.vo.RankKeyword;
 import sesoc.global.keyworld.vo.RealKeyword;
+import sesoc.global.keyworld.vo.Scrap;
 
 
 @Controller
@@ -214,24 +215,103 @@ public class CustomerController {
 	@RequestMapping(value = "keywordFilter", method = RequestMethod.POST)
 	public @ResponseBody List<Keyword> keywordFilter(
 						Locale locale, 
-						Model model,
-						@RequestParam(value="nationNum", defaultValue="0") int nationNum,
-						@RequestParam(value="broadcastNum", defaultValue="0") int broadcastNum,
-						@RequestParam(value="divisionNum", defaultValue="0") int divisionNum,
+						Model model, 
+						@RequestParam(value="nation_num", defaultValue="0") int nationNum,
+						@RequestParam(value="broadcast_num", defaultValue="0") int broadcastNum,
+						@RequestParam(value="division_num", defaultValue="0") int divisionNum,
 						@RequestParam(value="fromDate", defaultValue="0") String fromDate ,
 						@RequestParam(value="toDate", defaultValue="0") String toDate
 						) {
-	Map<String,String> map = new HashMap<String, String>();
-	map.put("nation_num", nationNum+"");
-	map.put("broadcast_num", broadcastNum+"");
-	map.put("division_num", divisionNum+"");
-	map.put("fromDate", fromDate);
-	map.put("toDate", toDate);
+	Map<String,Integer> map = new HashMap<String, Integer>();
+	//기사 필터링
+	System.out.println("들어온 nationNum : "+nationNum);
+	if(nationNum == 216){ // 한국
+		map.put("division_start_num",1);
+		map.put("division_end_num", 11);
+	}
+	if(nationNum == 222){ // 일본
+		map.put("division_start_num",11);
+		map.put("division_end_num", 19);
+	}
+	if(nationNum == 39){ //중국
+		map.put("division_start_num",19);
+		map.put("division_end_num", 24);
+	}
+	if(nationNum == 12){ //호주
+		map.put("division_start_num",24);
+		map.put("division_end_num", 30);
+	}
+	if(nationNum == 33){ //캐나다
+		map.put("division_start_num",30);
+		map.put("division_end_num", 38);
+	}
+	if(nationNum == 138){ //싱가폴
+		map.put("division_start_num",38);
+		map.put("division_end_num", 46);
+	}
+	if(nationNum == 230){ //인도
+		map.put("division_start_num",46);
+		map.put("division_end_num", 54);
+	}
+	if(nationNum == 174){ //뉴질랜드
+		map.put("division_start_num",54);
+		map.put("division_end_num", 62);
+	}
+	if(nationNum == 159){ //필리핀
+		map.put("division_start_num",62);
+		map.put("division_end_num", 69);
+	}
+	if(nationNum == 105){ //영국
+		map.put("division_start_num",69);
+		map.put("division_end_num", 77);
+	}
+	if(nationNum == 104){ //미국
+		map.put("division_start_num",77);
+		map.put("division_end_num", 87);
+	}
+	
+	map.put("broadcast_num", broadcastNum);
+	map.put("division_num", divisionNum);
+	
+	fromDate = fromDate.replace("-", "");
+	toDate = toDate.replace("-", "");
+	map.put("fromDate", new Integer(fromDate));
+	map.put("toDate", new Integer(toDate));
 	System.out.println("키워드 필터링");
+	System.out.println(map.toString());
 	List<Keyword> keywordList = repok.keywordFilter(map);
 	System.out.println("필터링완료 : "+keywordList.toString());
 	
 	return keywordList;
 	}
+	
+	//스크랩한 기사 번호를 db에 넣는다.
+		@RequestMapping(value = "scraping", method = RequestMethod.POST)
+		public @ResponseBody String scraping(Locale locale, Model model,HttpSession session,@RequestParam(value="article_num") int article_num) {
+		System.out.println("들어옴2");
+		System.out.println(article_num);
+		String userid = (String) session.getAttribute("loginId");
+		Scrap scrap = new Scrap();
+		scrap.setArticle_num(article_num);
+		scrap.setUserid(userid);
+		//중복검사
+		Scrap sc = repok.selectScrapOne(scrap);
+		System.out.println(sc);
+		//같은 아이디인 사람이 동일한 기사를 중복해서 스크랩을 했을 때 경고창을 띄운다. 
+		if(sc != null){
+			System.out.println("스크랩 중복됨.");
+			return "duplicated";
+		}
+		//스크랩 insert
+		int check = repok.insertScrap(scrap);
+
+		//insert가 됬으면 성공 문자열 반환.
+		if(check != 0){
+			return "success";
+		}
+			return "nn";
+		}
+		//주세휘//주세휘
+	
 	
 }

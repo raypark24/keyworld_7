@@ -13,6 +13,8 @@
 		<typeAlias type="sesoc.global.keyworld.vo.RealKeyword" alias = "RealKeyword" />
 		<typeAlias type="sesoc.global.keyworld.vo.Article" alias = "Article" />
 		<typeAlias type="sesoc.global.keyworld.vo.Menu" alias = "Menu"/>
+		<typeAlias type="sesoc.global.keyworld.vo.Scrap" alias = "Scrap"/>
+		
 		<!-- <typeAlias type="sesoc.global.test.vo.Board" alias = "Board"/>
 		<typeAlias type="sesoc.global.test.vo.Notice" alias = "Notice"/>
 		<typeAlias type="sesoc.global.test.vo.Reply" alias = "Reply"/> -->

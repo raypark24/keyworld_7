@@ -42,7 +42,7 @@
   <!-- "sm-simple" menu theme (optional, you can use your own CSS, too) -->
   <link href="resources/css/sm-simple.css" rel="stylesheet" type="text/css" />
   <link href="resources/css/zebra_datepicker.css" rel="stylesheet" type="text/css" />
-
+<link href="resources/css/animate.css" rel="stylesheet" type="text/css" />
    
 <title>Insert title here</title>
 </head>
@@ -226,30 +226,30 @@ b.redtext{
                 <ul class = 'nation'>
                 <li><a href="#">Asia</a>
                     <ul>
-                        <li><a href="#"><input type="radio" name="radio1" id="Korea" value="216"><label for = "Korea">Korea</label></a></li>
-                        <li><a href="#"><input type="radio" name="radio1" id="Japan" value="222"><label for = "Japan">Japan</label></a></li>
-                        <li><a href="#"><input type="radio" name="radio1" id="China" value="39"><label for = "China">China</label></a></li>
-                         <li><a href="#"><input type="radio" name="radio1" id="Singapore" value="138"><label for = "Singapore">Singapore</label></a></li>
-                        <li><a href="#"><input type="radio" name="radio1" id="Philippines" value="159"><label for = "Philippines">Philippines</label></a></li>
+                        <li><a href="#"><input type="radio" name="radio1" id="Korea" class="Filter" value="216"><label for = "Korea">Korea</label></a></li>
+                        <li><a href="#"><input type="radio" name="radio1" id="Japan" class="Filter" value="222"><label for = "Japan">Japan</label></a></li>
+                        <li><a href="#"><input type="radio" name="radio1" id="China" class="Filter" value="39"><label for = "China">China</label></a></li>
+                         <li><a href="#"><input type="radio" name="radio1" id="Singapore" class="Filter" value="138"><label for = "Singapore">Singapore</label></a></li>
+                        <li><a href="#"><input type="radio" name="radio1" id="Philippines" class="Filter" value="159"><label for = "Philippines">Philippines</label></a></li>
                     </ul>
                 </li>
                 <li><a href="#">America</a>
                     <ul>
-                        <li><a href="#"><input type="radio" name="radio1" id="USA" value="104"><label for = "USA">USA</label></a></li>
-                        <li><a href="#"><input type="radio" name="radio1" id="Canada" value="33"><label for = "Canada">Canada</label></a></li>
+                        <li><a href="#"><input type="radio" name="radio1" id="USA" class="Filter" value="104"><label for = "USA">USA</label></a></li>
+                        <li><a href="#"><input type="radio" name="radio1" id="Canada" class="Filter" value="33"><label for = "Canada">Canada</label></a></li>
                     </ul>
                 </li>
                 <li><a href="#">Oceania</a>
                     <ul>
-                <li><a href="#"><input type="radio" name="radio1" id="radio1" value="12"><label for = "Australia">Australia</label></a></li>
-                <li><a href="#"><input type="radio" name="radio1" id="radio1" value="174"><label for = "New Zealand">New Zealand</label></a></li>
+                <li><a href="#"><input type="radio" name="radio1" id="radio1" class="Filter" value="12"><label for = "Australia">Australia</label></a></li>
+                <li><a href="#"><input type="radio" name="radio1" id="radio1" class="Filter" value="174"><label for = "New Zealand">New Zealand</label></a></li>
                 
                 
                 </ul>
                     </li>
                 <li><a href="#">Europe</a>
                       <ul>
-                <li><a href="#"><input type="radio" name="radio1" id="England" value="105"><label for = "England">England</label></a></li>
+                <li><a href="#"><input type="radio" name="radio1" id="England" class="Filter" value="105"><label for = "England">England</label></a></li>
                
                 
                 </ul>
@@ -398,7 +398,7 @@ b.redtext{
      		 dataType: 'json',
      		 success : function(data){
     			 	$.each(data, function(idx, val) {
-    				 	$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+");' id='"+val.url+"' class='title_a'>"+val.title+"</a></td> </tr>")
+    			 		$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+","+val.article_num+");' id='"+val.url+"' class='title_a'>"+val.title+"</a></td> </tr>")
     			 	});
      		 },
      		 error : function(){
@@ -424,7 +424,7 @@ b.redtext{
     		 dataType: 'json',
     		 success : function(data){
    			 	$.each(data, function(idx, val) {
-   				 	$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td class='title_td'><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+");' id='"+val.url+"' class='title_a'>"+val.title+"</a></td> </tr>")
+   				 	$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td class='title_td'><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+","+val.article_num+");' id='"+val.url+"' class='title_a'>"+val.title+"</a></td> </tr>")
    			 	});
     		 },
     		 error : function(){
@@ -436,10 +436,89 @@ b.redtext{
       });
   }
   
-  function articleDetail(inputUrl,inputDivision_num){
+  function initialize2(){
+	  var earth = new WE.map('earth_div', {'tilting':false, 'sky': true, 'atmosphere': true});
+      var natural = WE.tileLayer('http://data.webglearth.com/natural-earth-color/{z}/{x}/{y}.jpg', {
+          tileSize: 256,
+          tms: true
+        });
+        natural.addTo(earth);
+      WE.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png',{
+    	  attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.',
+          opacity: 0.7
+      }).addTo(earth);
+    //var markerCustom = WE.marker([50, -20], '/img/logo-webglearth-white-100.png', 100, 24).addTo(earth);
+
+      var options = {color: '#ff0', opacity: 1, fillColor: '#f00', fillOpacity: 0.1, weight: 2, editable: true };
+      /*var polygonB = WE.polygon([[-70, -170], [51, 2.5], [50.5, 4.5]], options).addTo(earth);*/
+      
+      //earth.setView([48, 6], 5);
+      $(".we-pm-icon").css("opacity", "0.7");
+      
+      $(".we-pp-tip").removeAttr("background");
+      $(".we-pp-wrapper").removeAttr("background");
+      $(".we-pp").mouseover(function(){
+    	 $(".we-pp-wrapper").css('z-index','200000');
+    	 $(".we-pp-content").css('z-index','200000');
+    	 $(this).css('z-index','200000');
+      });
+      
+      $(".we-pp-wrapper").click(function(){
+    	  $("#articleTable").html("<tr><th>번 호</th><th>기사 제목</th></tr>");
+    	  var text = $(this).children().children().children().first().attr("id");
+    	  $.ajax({
+     		 url: 'rkeywordSelect',
+     		 type: 'POST',
+     		 data: {
+     			 keyword_num : text
+     		 },
+     		 dataType: 'json',
+     		 success : function(data){
+    			 	$.each(data, function(idx, val) {
+    				 	$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+","+val.article_num+");' id='"+val.url+"' class='title_a'>"+val.title+"</a></td> </tr>")
+    			 	});
+     		 },
+     		 error : function(){
+     			 alert("에러!!");
+     		 }
+     	  });
+      });
+      
+      $(".we-pp").mouseout(function(){
+    	 $(".we-pp-wrapper").css('z-index','0');
+    	 $(".we-pp-content").css('z-index','0');
+    	 $(this).css('z-index','0');
+      });
+      
+      $(".a_rank").click(function(){
+    	  $("#articleTable").html("<tr><th>번 호</th><th>기사 제목</th></tr>");
+    	  $.ajax({
+    		 url: 'rkeywordSelect',
+    		 type: 'POST',
+    		 data: {
+    			 keyword_num : $(this).attr('id')
+    		 },
+    		 dataType: 'json',
+    		 success : function(data){
+   			 	$.each(data, function(idx, val) {
+   			 		$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td class='title_td'><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+","+val.article_num+");' id='"+val.url+"' class='title_a'>"+val.title+"</a></td> </tr>")
+   			 	});
+    		 },
+    		 error : function(){
+    			 alert("에러!!");
+    		 }
+    	  });
+    	  //$(".we-pp").css("display","None");
+
+      });
+      return earth;
+  }
+  
+  function articleDetail(inputUrl,inputDivision_num,inputArticle_num){
 	  
 	  var url = inputUrl;
 	  var division_num = inputDivision_num;
+	  var article_num = inputArticle_num;
 	  // 파이썬 통신 후 html 태그들 가져와서 뿌리기.
 	   $.ajax({
     		 url: 'articleDetail',
@@ -457,24 +536,13 @@ b.redtext{
     		           theme: 'black filled',
     		           contentSize: {width: 1000, height: 600},
     		           headerToolbar: [
-    		               {
-    		                   item:     "<span class='fa fa-bars' style='cursor:pointer;'>",
+    		        	   {
+    		                   item:     "<span onclick = 'scraping("+ article_num +");' class='fa fa-reply-all' style='cursor:pointer;'>",
     		                   event:    "click",
     		                   callback: function (event) {event.data.content.append("<p>You clicked on the menu ...</p>"); }
-    		               },
-    		               {
-    		                   item:     "<span class='fa fa-cog' style='cursor:pointer;margin-left:5px;'>",
-    		                   event:    "click",
-    		                   callback: function (event) {event.data.content.append("<p>You clicked on the tools this time ...</p>"); }
-    		               },
-    		               {
-    		                   item:     "<span class='fa fa-sign-in' style='cursor:pointer;margin-left:5px;'>",
-    		                   event:    "click",
-    		                   callback: function (event) {event.data.content.append("<p>Logout ...</p>"); }
     		               }
     		           ],
-    		           
-    		           show: "jsPanelFadeIn",  
+    		           show: "animated rubberBand",  
     		           headerTitle: "Article",
     		           border:   "1px solid darkgray",
     		           content: function(){
@@ -503,8 +571,117 @@ b.redtext{
     		 }
     	}); 
 	  
+	   
+	  
+	  
 	  
   }
+  
+  function scraping(article_num){
+	   	//스트랩 버튼을 눌렀을 때 db쪽으로 article번호를 넘기는 ajax코드
+	    $.ajax({
+  		 url: 'scraping',
+  		 type: 'POST',
+  		 data: {
+  			 article_num : article_num
+  		 },
+  		 dataType: 'text',
+  		 success : function(result){
+  			 if(result == 'success'){
+  				 $.jsPanel({
+  					    template:    jsPanel.tplContentOnly,
+  					    paneltype:   'hint',
+  					    position:    'center-top -5 5 DOWN',
+  					    theme:       'green filledlight',
+  					    border:      '2px solid',
+  					    contentSize: '400 88',
+  					    show:        'animated slideInUp',
+  					    content:     "<div><i class='fa fa-check' style='margin:auto;'></i></div>"+
+  					                 "<div><p style='margin:auto;'>Success</p></div>"+
+  					                 "<div><i class='fa fa-remove'></i></div>",
+  					    callback:    function(panel) {
+  					        this.content.css({
+  					            display: 'flex',
+  					            color:   'darkgreen'
+  					        });
+  					        $('div:first-of-type', this.content).css({
+  					            borderRadius: '50%',
+  					            display:      'flex',
+  					            fontSize:     '36px',
+  					            margin:       '12px',
+  					            width:        '60px'
+  					        });
+  					        $('div', this.content).eq(1).css({
+  					            display:    'flex',
+  					            fontSize:   '24px',
+  					            fontWeight: 'bold',
+  					            textAlign:  'center',
+  					            width:      'calc(100% - 126px)'
+  					        });
+  					        $('div', this.content).eq(2).css({
+  					            display:       'flex',
+  					            flexDirection: 'row-reverse',
+  					            alignItems:    'flex-start',
+  					            fontSize:      '18px',
+  					            width:         '45px',
+  					            padding:       '4px'
+  					        });
+  					        $('div', this.content).eq(2).find('i').css({
+  					            cursor: 'pointer'
+  					        }).click(function(){panel.close();});
+  					    }
+  					});
+  				 
+  				 
+  			 }else if(result = "duplicated"){
+  				 $.jsPanel({
+					    template:    jsPanel.tplContentOnly,
+					    paneltype:   'hint',
+					    position:    'center-top -5 5 DOWN',
+					    theme:       'warning filledlight',
+					    border:      '2px solid',
+					    contentSize: '400 88',
+					    show:        'animated slideInUp',
+					    content:     "<div><i class='fa fa-exclamation-circle' style='margin:auto;'></i></div>"+
+					                 "<div><p style='margin:auto;'>Error</p></div>"+
+					                 "<div><i class='fa fa-remove'></i></div>",
+					    callback:    function(panel) {
+					        this.content.css({
+					            display: 'flex',
+					            color:   'darkorange'
+					        });
+					        $('div:first-of-type', this.content).css({
+					            borderRadius: '50%',
+					            display:      'flex',
+					            fontSize:     '36px',
+					            margin:       '12px',
+					            width:        '60px'
+					        });
+					        $('div', this.content).eq(1).css({
+					            display:    'flex',
+					            fontSize:   '24px',
+					            fontWeight: 'bold',
+					            textAlign:  'center',
+					            width:      'calc(100% - 126px)'
+					        });
+					        $('div', this.content).eq(2).css({
+					            display:       'flex',
+					            flexDirection: 'row-reverse',
+					            alignItems:    'flex-start',
+					            fontSize:      '18px',
+					            width:         '45px',
+					            padding:       '4px'
+					        });
+					        $('div', this.content).eq(2).find('i').css({
+					            cursor: 'pointer'
+					        }).click(function(){panel.close();});
+					    }
+					});
+  				 
+  			 }
+  		 }
+	    });
+}
   
     </script>  
             <!-- loading jsPanel javascript -->
@@ -645,7 +822,7 @@ b.redtext{
                 dragit: {
                 disable: true
             },
-            headerTitle: "Article",
+            headerTitle: "Article List",
             border:   "1px solid darkgray",
             content: function(){
                 $(this).css('background-color', 'rgba(0,0,0,' + 0.5 + ')');
@@ -659,7 +836,7 @@ b.redtext{
             }
         });
         
-        
+
         
         
 /*    var arr = [
@@ -691,15 +868,14 @@ b.redtext{
     }
 });*/
  
-        
     })  
+    
+    
     </script>
       <script type="text/javascript">
-			$(document).ready(function()
-			{
+			$(document).ready(function(){
 			    //call the plugin
-			    $('body').mln_menu(
-			    {
+			    $('body').mln_menu({
 			    	'background' : '#333',
 			    	'color' : '#fff',
 			    	'hoverbackground' : '#fff',
@@ -710,40 +886,40 @@ b.redtext{
 			    });
                 
                
-             $("#menu_left > ul > li > a").on("click", function(){
+	             $("#menu_left > ul > li > a").on("click", function(){
+	                
+	                 var href = $(this).attr("href");
+	                 if(href == '#Board'){
+	                     var board = $.jsPanel({
+	                        position:    {my: "center", at: "center", offsetY: 50, offsetX: 10},
+	                        theme: 'black filled',
+	                        contentSize: {width: 1200, height: 600},
+	                        headerTitle: "Board",
+	                    
+	                        //border:   "1px solid darkgray",
+	                        content: function(){
+	                            $(this).css('background-color', 'rgba(255,255,255,' + 1 + ')');
+	                            /*return "<p style='padding:10px;'>1. 일본 지진</p>";*/
+	                        },
+	                         contentIframe: {
+	                            width:  1200,
+	                            height: 600,
+	                            src:    'file:///C:/Users/user/Downloads/startbootstrap-agency-gh-pages/startbootstrap-agency-gh-pages/index.html',
+	                            name:   'myFrame',
+	                            style:  {'border': '1px solid #000'}
+	                        },
+	                        callback: function () {
+	                            this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});
+	                            this.content.css({"font-size": "16px","padding": "15px"});
+	
+	                        }
+	                    });
+	                     
+	                 }
+	             
+	             });
                 
-                 var href = $(this).attr("href");
-                 if(href == '#Board'){
-                     var board = $.jsPanel({
-                        position:    {my: "center", at: "center", offsetY: 50, offsetX: 10},
-                        theme: 'black filled',
-                        contentSize: {width: 1200, height: 600},
-                        headerTitle: "Board",
-                    
-                        //border:   "1px solid darkgray",
-                        content: function(){
-                            $(this).css('background-color', 'rgba(255,255,255,' + 1 + ')');
-                            /*return "<p style='padding:10px;'>1. 일본 지진</p>";*/
-                        },
-                         contentIframe: {
-                            width:  1200,
-                            height: 600,
-                            src:    'file:///C:/Users/user/Downloads/startbootstrap-agency-gh-pages/startbootstrap-agency-gh-pages/index.html',
-                            name:   'myFrame',
-                            style:  {'border': '1px solid #000'}
-                        },
-                        callback: function () {
-                            this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});
-                            this.content.css({"font-size": "16px","padding": "15px"});
-
-                        }
-                    });
-                     
-                 }
-             
-          })
-                
-			});
+			 });
           
           
           
@@ -778,10 +954,12 @@ $(function() {
 	   $('.nation > li > ul> li > a').on('click', function(){
         
          if($('input:radio[name=radio1]').is(':checked')){
-            
+        	 $("#broadcast").empty();
+             $("#broadcast").append("Broadcast");
+             $("#division").empty();
+             $("#division").append("Division");
              var checked = $('input:radio[name=radio1]:checked').val();
              var nation = $('input:radio[name=radio1]:checked').attr('id');
-             alert(nation);
              $("div#nation").empty();
              $("div#nation").append(nation);
          	 
@@ -805,19 +983,21 @@ $(function() {
         				alert("error")
         			}
         	}); 
-   			
+            markerFilter();
          }       
      });
      //disable을 쓸 필요없이 ul안의 list가 전혀 없다가, db를 통해, 불러온다.
     
-     $('.nation > li > ul> li ').on('click', function(){
-         
-		    
-    	 
-     });
-		
-	
-	
+    
+    // 필터링 하는 부분.
+	$(".dp_daypicker").click(function(){
+		var start = $("#datepicker-example7-start").val();
+		var end = $("#datepicker-example7-end").val();
+		if(start != '' && end != ''){
+			markerFilter();
+		}
+	});
+    
 	
 	$('#main-menu').smartmenus({
 		mainMenuSubOffsetX: 1,
@@ -837,7 +1017,7 @@ function bOutput(resp){//데이터를 받는 것이 성공하면 함수를 실�
 	
 	$.each(resp, function(index,item){
 		
-		blist += '<li><a href="#" onclick="broadcast();"><input type="radio" name="radio2" id="'+item.broadcastName+'"value="'+item.broadcastNum+'"><label for = "'+ item.broadcastName +'" >'+ item.broadcastName + '</label></a></li>';
+		blist += '<li><a href="#" onclick="broadcast();"><input type="radio" name="radio2" id="'+item.broadcastName+'"value="'+item.broadcastNum+'" class="Filter"><label for = "'+ item.broadcastName +'" >'+ item.broadcastName + '</label></a></li>';
 	});
 	$("#broadcastList").empty();
 	$("#broadcastList").append(blist);
@@ -848,13 +1028,15 @@ function bOutput(resp){//데이터를 받는 것이 성공하면 함수를 실�
 	
 };
 
+
+
 function dOutput(resp){//데이터를 받는 것이 성공하면 함수를 실행한다. 
 	
 	var dlist = "";
 	
 	$.each(resp, function(index,item){
 		
-		dlist += '<li><a href="#" onclick="division();"><input type="radio" name="radio3" id="'+item.divisionName+'"value="'+item.divisionNum+'"><label for = "'+ item.divisionName +'">'+ item.divisionName + '</label></a></li>';
+		dlist += '<li><a href="#" onclick="division();"><input type="radio" name="radio3" id="'+item.divisionName+'"value="'+item.divisionNum+'" class="Filter"><label for = "'+ item.divisionName +'">'+ item.divisionName + '</label></a></li>';
 	});
 	$("#divisionList").empty();
 	$("#divisionList").append(dlist);
@@ -864,27 +1046,89 @@ function dOutput(resp){//데이터를 받는 것이 성공하면 함수를 실�
 };
 
 function division(){
- alert("dddd")
-if($('input:radio[name=radio3]').is(':checked')){
-  
-  var checked = $('input:radio[name=radio3]:checked').attr("id");
-  
-  $("#division").empty();
-  $("#division").append(checked);
-}       
+	if($('input:radio[name=radio3]').is(':checked')){
+	  //현재 선택된  분야 값
+	  var checked = $('input:radio[name=radio3]:checked').attr("id");
+	  
+	  $("#division").empty();
+	  $("#division").append(checked);
+	  markerFilter();
+	}       
 };
 
 
 function broadcast(){
-	 alert("dddd")
-if($('input:radio[name=radio2]').is(':checked')){
-	 
-    var checked = $('input:radio[name=radio2]:checked').attr("id");
-    alert(checked)
-    $("#broadcast").empty();
-    $("#broadcast").append(checked);
-}       
+	if($('input:radio[name=radio2]').is(':checked')){
+		//현재 선택된 broadcast값 
+	    var checked = $('input:radio[name=radio2]:checked').attr("id");
+	    $("#broadcast").empty();
+	    $("#broadcast").append(checked);
+	    markerFilter();
+	}       
 };
+
+function markerFilter(){
+	//현재 선택된 nation 값
+	var nation_num = $('input:radio[name=radio1]:checked').attr('value');
+	//현재 선택된 broadcast 값 
+    var broadcast_num = $('input:radio[name=radio2]:checked').attr("value");
+    //현재 선택된  division 값
+    var division_num = $('input:radio[name=radio3]:checked').attr("value");
+    //현재 선택된 fromDate 값
+	var start = $("#datepicker-example7-start").val();
+    //현재 선택된 toDate 값
+	var end = $("#datepicker-example7-end").val();
+
+ 	if(typeof nation_num == "undefined"){
+ 		nation_num = 0;
+ 	} 
+ 	if(typeof broadcast_num == "undefined"){
+ 		broadcast_num = 0;
+ 	}
+ 	if(typeof division_num == "undefined"){
+ 		division_num = 0;
+ 	}
+ 	if(start == ""){
+ 		start = 0;
+ 	}
+ 	if(end == ""){
+ 		end = 0;
+ 	}
+	 $.ajax({
+		
+		url: 'keywordFilter',
+		type: 'POST',
+		data: {
+			nation_num : nation_num,
+			broadcast_num : broadcast_num,
+			division_num : division_num,
+			fromDate : start,
+			toDate : end
+		},
+		dataType: 'json',
+		success : function(data){
+			$(".we-pp").remove();
+			$("#earth_div > canvas").remove();
+			var earth = initialize2();
+			$.each(data, function(idx, val) {
+				console.log(val.latitude);
+				if(val.point > 0){
+					WE.marker([val.latitude, val.longitude],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='bluetext' id='"+val.keyword_num+"'>"+val.keyword+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
+				}
+				if(val.point < 0){
+					WE.marker([val.latitude, val.longitude],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='redtext' id='"+val.keyword_num+"'>"+val.keyword+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
+				}
+				if(val.point == null){
+					console.log(val.point);
+					WE.marker([val.latitude, val.longitude],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='blacktext' id='"+val.keyword_num+"'>"+val.keyword+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
+				}
+			});
+		},
+		error : function(){
+			alert("에러!!");
+		}
+	});  
+}
 </script>
      
 

@@ -106,8 +106,8 @@
 	</select>
 	
 	 
-	<select id = "keywordFilter" parameterType="Map" resultType="Keyword">
-	<![CDATA[
+	<select id = "keywordFilter" parameterType="map" resultType="Keyword">
+	
 		select t.keyword_num, t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude, t.point point
 		from
 			(SELECT nation_num,keyword, keyword_num, point
@@ -122,20 +122,21 @@
 					WHERE uk.article_num = ar.article_num
 					AND ar.article_num = ul.article_num
 					AND ul.location_num = lo.location_num
-					<if test = "nation_num neq '0' ">
-						AND lo.nation_num = #{nation_num}
+					<if test = "division_start_num != 0 ">
+					AND ar.division_num &gt;= #{division_start_num}
+					AND ar.division_num &lt; #{division_end_num}
 					</if>
-					<if test = "broadcast_num neq '0' ">
-						AND ar.broadcast_num = #{broadcast_num}
+					<if test = "broadcast_num != 0 ">
+					AND ar.broadcast_num = #{broadcast_num}
 					</if>
-					<if test = "division_num neq '0' ">
-						AND ar.division_num = #{division_num}
+					<if test = "division_num != 0 ">
+					AND ar.division_num = #{division_num}
 					</if>
-					<if test = "fromDate neq '0'">
-						AND ar.writed_data >= to_date('#{fromDate}','YY-MM-DD')
+					<if test = "fromDate != 0">
+					AND ar.writed_data &gt;= to_date(#{fromDate},'YYMMDD')
 					</if>
-					<if test = "toDate neq '0'">
-						AND ar.writed_data <= to_date('#{toDate}','YY-MM-DD')
+					<if test = "toDate != 0">
+					AND ar.writed_data &lt;= to_date(#{toDate},'YYMMDD')
 					</if>
 					GROUP BY keyword_num, nation_num) WHERE rank=1
 				) t,
@@ -145,7 +146,7 @@
 				 	FROM capital cap
 				 ) cap
   			where cap.nation_num = t.nation_num
-  	]]>
+
 	</select>
 	
 	 
@@ -198,4 +199,23 @@
 		
 	</select>
 	
+	<select id = "selectScrapOne"  parameterType = "Scrap" resultType="Scrap" >
+		SELECT scrap_num, article_num, scrap_date, userid
+		FROM SCRAP
+		WHERE article_num = #{article_num} 
+		AND userid = #{userid}
+		
+	</select>
+	
+	
+	<insert id="insertScrap" parameterType = "Scrap" >
+	
+	INSERT INTO SCRAP VALUES 
+	(
+		scrap_num_seq.nextval
+		, #{article_num}
+		, sysdate
+		, #{userid}
+	)
+	</insert>
 </mapper>
