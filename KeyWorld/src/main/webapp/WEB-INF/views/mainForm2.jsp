@@ -333,10 +333,10 @@ div.real_menu{
   </button>
   <!-- 언어선택부분 : ul태그 였으나, 기존 메뉴와 충돌로 인해 임시로 ol태그로 변경하여 해결. -->
   <ol class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-    <li id = "Korean" role="presentation" style = "width:100px"><a role="menuitem" tabindex="-1" href="#">Korean</a></li>
-    <li id = "English" role="presentation" style = "width:100px"><a role="menuitem" tabindex="-1" href="#">English</a></li>
-    <li id = "Japanese" role="presentation" style = "width:100px"><a role="menuitem" tabindex="-1" href="#">Japanese</a></li>
-    <li id = "Chinese" role="presentation" style = "width:100px"><a role="menuitem" tabindex="-1" href="#">Chinese</a></li>
+    <li id = "Korean" class="ko" role="presentation" style = "width:100px"><a role="menuitem" tabindex="-1" href="#">Korean</a></li>
+    <li id = "English" class="us" role="presentation" style = "width:100px"><a role="menuitem" tabindex="-1" href="#">English</a></li>
+    <li id = "Japanese" class="jp" role="presentation" style = "width:100px"><a role="menuitem" tabindex="-1" href="#">Japanese</a></li>
+    <li id = "Chinese" class="ch" role="presentation" style = "width:100px"><a role="menuitem" tabindex="-1" href="#">Chinese</a></li>
   </ol> 
 </div>
 </li>                       
@@ -1147,18 +1147,22 @@ function realchart(){
     	//언어선택 드랍다운.
     	$('#Korean').on('click', function(){
     		$('#language').empty();
+    		languageFilter('ko');
     		$('#language').append("Korean");
     	});
 		$('#English').on('click', function(){
 			$('#language').empty();
+			languageFilter('us');
     		$('#language').append("English");		
 		});
 		$('#Japanese').on('click', function(){
 			$('#language').empty();
+			languageFilter('jp');
     		$('#language').append("Japanese");
 		});
 		$('#Chinese').on('click', function(){
 			$('#language').empty();
+			languageFilter('ch');
     		$('#language').append("Chinese");
 		});
 		//언어선택 드랍다운 css 수정.
@@ -1234,7 +1238,7 @@ function realchart(){
             content: function(){
                 $(this).css('background-color', 'rgba(0,0,0,' + 0.5 + ')');
                 //return "<c:forEach items='${rankingList}' var='keyword' varStatus='stat'>${keyword.keyword} <br/></c:forEach>";
-                return "<c:forEach items='${rankingList}' var='keyword' varStatus='stat' begin='0'><a href='#' class='a_rank' id='${keyword.keyword_num}'>${stat.count}위 : ${keyword.keyword}</a><br/></c:forEach>";
+                return "<div class = 'ranklist'><c:forEach items='${rankingList}' var='keyword' varStatus='stat' begin='0'><a href='#' class='a_rank' id='${keyword.keyword_num}'>${stat.count}위 : ${keyword.keyword}</a><br/></c:forEach></div>";
             },
             callback: function () {
                 this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});
@@ -1411,14 +1415,13 @@ function realchart(){
 <!-- SmartMenus jQuery init -->
 <script type="text/javascript">
 $(function() {
-   
       $('.nation > li > ul> li > a').on('click', function(){
    if($('input:radio[name=radio1]').is(':checked')){
   	 
   	 $("#clear1").css("display", "inline");
 
   	 //체크 되면 버튼 생성.
-  	 
+  	   
        var checked = $('input:radio[name=radio1]:checked').val();
        var nation = $('input:radio[name=radio1]:checked').attr('id');
        alert(nation);
@@ -1442,7 +1445,8 @@ $(function() {
   				alert("error")
   			}
   	});
-    markerFilter();
+    var type = 'us';
+    markerFilter(type);
    }       
 });
 //disable을 쓸 필요없이 ul안의 list가 전혀 없다가, db를 통해, 불러온다.
@@ -1462,10 +1466,11 @@ $('#clear1').on('click', function(){
 });
      // 필터링 하는 부분.
 	$(".dp_daypicker").click(function(){
+		var type = 'us';
 		var start = $("#datepicker-example7-start").val();
 		var end = $("#datepicker-example7-end").val();
 		if(start != '' && end != ''){
-			markerFilter();
+			markerFilter(type);
 		}
 	});
     
@@ -1519,7 +1524,7 @@ function dOutput(resp){//데이터를 받는 것이 성공하면 함수를 실�
 });
 };
 function broadcast(){
-	
+	var type = 'us';
 	if($('input:radio[name=radio2]').is(':checked')){
 		
 		
@@ -1529,11 +1534,11 @@ function broadcast(){
 	    $("#broadcast").empty();
 	    $("#broadcast").append(checked);
 	    $("#clear2").css("display", "inline");
-        markerFilter();
+        markerFilter(type);
 	}       
 };
 function division(){
-
+	var type = 'us';
 	if($('input:radio[name=radio3]').is(':checked')){
 		
 		 
@@ -1543,11 +1548,12 @@ function division(){
 	  $("#division").empty();
 	  $("#division").append(checked);
 	  $("#clear3").css("display", "inline");
-    markerFilter();
+    markerFilter(type);
 	}       
 };
 
-function markerFilter(){
+function markerFilter(type){
+	alert(type);
    //현재 선택된 nation 값
    var nation_num = $('input:radio[name=radio1]:checked').attr('value');
    //현재 선택된 broadcast 값 
@@ -1707,12 +1713,19 @@ function keywordSearch(){
        
 }
 
+function languageFilter(input_type){
+	var type = input_type;
+	alert(type);
+	
+	
+	
+}
 
 
 
 </script>
 <!-- 윤상혁 -->     
 <img id="loading-image" src="resources/img/loading1.gif" style="width:130px;position:absolute;margin:auto;top:0;left:0;right:0;bottom:0;z-index:9999999">     
-
+<div id="11" class="22"></div>
 </body>
 </html>

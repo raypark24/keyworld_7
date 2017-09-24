@@ -100,7 +100,7 @@
 		from 
 			(select uk.keyword_num, count(uk.keyword_num) from used_keyword uk group by uk.keyword_num order by count(uk.keyword_num) desc) ukn,
 			keyword k 
-		where rownum < 11 
+		where rownum < 8 
 		and ukn.keyword_num = k.keyword_num
 	]]>
 	</select>
@@ -110,10 +110,21 @@
 	
 		select t.keyword_num, t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude, t.point point
 		from
-			(SELECT nation_num,keyword, keyword_num, point
+			(SELECT nation_num, keyword, keyword_num, point
 			FROM
 				(SELECT nation_num,
-        			(SELECT us_keyword FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword,
+        			(SELECT 
+        			<if test = "type == 0 ">
+        				us_keyword
+        			</if>
+        			<if test = "type == 1 ">
+        				us_keyword
+        			</if>
+        			<if test = "type == 4 ">
+        				us_keyword
+        			</if>
+        			
+        			FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword,
         			(SELECT keyword_num FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword_num,
         			COUNT(*) count,
         			ROW_NUMBER() OVER(PARTITION BY nation_num ORDER BY COUNT(*) DESC) rank,
@@ -133,10 +144,10 @@
 					AND ar.division_num = #{division_num}
 					</if>
 					<if test = "fromDate != 0">
-					AND ar.writed_data &gt;= to_date(#{fromDate},'YYMMDD')
+					AND ar.writed_date &gt;= to_date(#{fromDate},'YYMMDD')
 					</if>
 					<if test = "toDate != 0">
-					AND ar.writed_data &lt;= to_date(#{toDate},'YYMMDD')
+					AND ar.writed_date &lt;= to_date(#{toDate},'YYMMDD')
 					</if>
 					GROUP BY keyword_num, nation_num) WHERE rank=1
 				) t,
@@ -154,7 +165,7 @@
 	<![CDATA[
 		select realtime_num ,realtime_word keyword, to_char(realtime_date,'YYYY/MM/DD HH24:mm') realTime
 		from realtime_word 
-		where rownum<11 
+		where rownum<8 
 		order by realtime_date desc
 	]]>
 	</select>
@@ -254,10 +265,10 @@
 		AND ar.division_num = #{division_num}
 		</if>
 		<if test = "fromDate != 0">
-		AND ar.writed_data &gt;= to_date(#{fromDate},'YYMMDD')
+		AND ar.writed_date &gt;= to_date(#{fromDate},'YYMMDD')
 		</if>
 		<if test = "toDate != 0">
-		AND ar.writed_data &lt;= to_date(#{toDate},'YYMMDD')
+		AND ar.writed_date &lt;= to_date(#{toDate},'YYMMDD')
 		</if>
 		AND rownum &lt; 9
 		order by ar.writed_date desc
@@ -272,7 +283,7 @@
 	      from realtime_word 
 	      where nation_num = #{nationNum}
 	      order by realtime_date desc, rank asc
-      ) where rownum < 11
+      ) where rownum < 8
     ]]>
 	</select>
 	

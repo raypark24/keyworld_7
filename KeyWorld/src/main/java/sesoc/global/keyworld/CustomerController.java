@@ -266,13 +266,28 @@ public class CustomerController {
 			@RequestParam(value = "broadcast_num", defaultValue = "0") int broadcastNum,
 			@RequestParam(value = "division_num", defaultValue = "0") int divisionNum,
 			@RequestParam(value = "fromDate", defaultValue = "0") String fromDate,
-			@RequestParam(value = "toDate", defaultValue = "0") String toDate) {
+			@RequestParam(value = "toDate", defaultValue = "0") String toDate,
+			@RequestParam(value = "type", defaultValue = "0") String type) {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		// 기사 필터링
 		System.out.println("들어온 nationNum : " + nationNum);
-
+		System.out.println("들어온 language(한중일영-1234) : "+ type);
 		map = filterMap(nationNum, broadcastNum, divisionNum, fromDate, toDate);
-
+		if(type.equals("ko")){
+			map.put("type",	1);
+		}
+		else if(type.equals("ch")){
+			map.put("type", 2);
+		}
+		else if(type.equals("jp")){
+			map.put("type", 3);
+		}
+		else if(type.equals("us")){
+			map.put("type", 4);
+		}
+		else{
+			map.put("type", 0);
+		}
 		System.out.println("키워드 필터링");
 		System.out.println(map.toString());
 		List<Keyword> keywordList = repok.keywordFilter(map);
@@ -405,8 +420,8 @@ public class CustomerController {
 		if (direction.equals("forward")) {
 			switch (curr_nation) {
 			case "Canada":
-				nationNum = map.get("United States");
-				nextNation = "United States";
+				nationNum = map.get("India");
+				nextNation = "India";
 				break;
 			case "United States":
 				nationNum = map.get("United Kingdom");
@@ -417,20 +432,20 @@ public class CustomerController {
 				nextNation = "Singapore";
 				break;
 			case "Singapore":
-				nationNum = map.get("South Korea");
-				nextNation = "South Korea";
+				nationNum = map.get("Canada");
+				nextNation = "Canada";
 				break;
 			case "South Korea":
 				nationNum = map.get("Japan");
 				nextNation = "Japan";
 				break;
 			case "Japan":
-				nationNum = map.get("India");
-				nextNation = "India";
+				nationNum = map.get("United States");
+				nextNation = "United States";
 				break;
 			case "India":
-				nationNum = map.get("Canada");
-				nextNation = "Canada";
+				nationNum = map.get("South Korea");
+				nextNation = "South Korea";
 				break;
 			default:
 				nationNum = 216;
@@ -439,12 +454,12 @@ public class CustomerController {
 		} else if (direction.equals("backward")) {
 			switch (curr_nation) {
 			case "Canada":
-				nationNum = map.get("India");
-				nextNation = "India";
+				nationNum = map.get("Singapore");
+				nextNation = "Singapore";
 				break;
 			case "United States":
-				nationNum = map.get("Canada");
-				nextNation = "Canada";
+				nationNum = map.get("Japan");
+				nextNation = "Japan";
 				break;
 			case "United Kingdom":
 				nationNum = map.get("United States");
@@ -455,16 +470,16 @@ public class CustomerController {
 				nextNation = "United Kingdom";
 				break;
 			case "South Korea":
-				nationNum = map.get("Singapore");
-				nextNation = "Singapore";
+				nationNum = map.get("India");
+				nextNation = "India";
 				break;
 			case "Japan":
 				nationNum = map.get("South Korea");
 				nextNation = "South Korea";
 				break;
 			case "India":
-				nationNum = map.get("Japan");
-				nextNation = "Japan";
+				nationNum = map.get("Canada");
+				nextNation = "Canada";
 				break;
 			default:
 				nationNum = 216;
@@ -556,7 +571,6 @@ public class CustomerController {
 		System.out.println("article Detail method............");
 		String html = "";
 		System.out.println(url);
-		System.out.println(second);
 		Document document = null;
 		try {
 			document = Jsoup.connect(url).execute().parse();
@@ -569,6 +583,7 @@ public class CustomerController {
 			System.out.println("한국 기사");
 			html = document.select("div#articleBodyContents").html();
 			if(html.length()==0) html = document.select("div#articeBody").html();
+			if(html.length()==0) html = document.select("div.content_area").html();
 		}//case Korea
 		
 		else if(url.contains("co.jp") == true){
@@ -583,7 +598,7 @@ public class CustomerController {
 					+document.select("div.article").html();
 		}//case Australia
 		
-		else if(url.contains("qqq.com") == true){
+		else if(url.contains("qq.com") == true){
 			System.out.println("중국기사");
 			html = document.select("div.qq_article").html();
 			if (html.length()==0) html = document.select("div#C-Main-Article-QQ").html();
