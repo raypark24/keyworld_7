@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sesoc.global.keyworld.dao.KeywordDAO">
+	
+	<!-- 한국 -->
+	<!-- 
+	<select id = "selectKeyword"  resultType="Keyword">
+	<![CDATA[
+		select t.keyword_num, t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude, t.point point
+		from
+			(SELECT nation_num,keyword, keyword_num, point
+			FROM
+				(SELECT nation_num,
+        			(SELECT ko_keyword FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword,
+        			(SELECT keyword_num FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword_num,
+        			COUNT(*) count,
+        			ROW_NUMBER() OVER(PARTITION BY nation_num ORDER BY COUNT(*) DESC) rank,
+        			AVG(ar.emotion_point) point
+  					FROM used_keyword uk, used_location ul, article ar, location lo
+					WHERE uk.article_num = ar.article_num
+					AND ar.article_num = ul.article_num
+					AND ul.location_num = lo.location_num
+					AND ar.division_num>0
+					ANd ar.division_num<11
+					GROUP BY keyword_num, nation_num) WHERE rank=1
+				) t,
+				 (SELECT cap.nation_num as nation_num, 
+				 		cap.latitude as latitude, 
+				 		cap.longitude as longitude 
+				 	FROM capital cap
+				 ) cap
+  			where cap.nation_num = t.nation_num
+  	]]>
+	</select>
+	 -->
+	
+	<!-- 일본 -->
+	<!-- <select id = "selectKeyword"  resultType="Keyword">
+	<![CDATA[
+		select t.keyword_num, t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude, t.point point
+		from
+			(SELECT nation_num,keyword, keyword_num, point
+			FROM
+				(SELECT nation_num,
+        			(SELECT jp_keyword FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword,
+        			(SELECT keyword_num FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword_num,
+        			COUNT(*) count,
+        			ROW_NUMBER() OVER(PARTITION BY nation_num ORDER BY COUNT(*) DESC) rank,
+        			AVG(ar.emotion_point) point
+  					FROM used_keyword uk, used_location ul, article ar, location lo
+					WHERE uk.article_num = ar.article_num
+					AND ar.article_num = ul.article_num
+					AND ul.location_num = lo.location_num
+					AND ar.division_num>10
+					ANd ar.division_num<19
+					GROUP BY keyword_num, nation_num) WHERE rank=1
+				) t,
+				 (SELECT cap.nation_num as nation_num, 
+				 		cap.latitude as latitude, 
+				 		cap.longitude as longitude 
+				 	FROM capital cap
+				 ) cap
+  			where cap.nation_num = t.nation_num
+  	]]>
+	</select> -->
+	<!-- 전체 기사  us_keyword -->
+	 
+		<select id = "selectKeyword"  resultType="Keyword">
+		select t.keyword_num, t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude, t.point point
+		from
+			(SELECT nation_num,keyword, keyword_num, point
+			FROM
+				(SELECT nation_num,
+        			(SELECT us_keyword FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword,
+        			(SELECT keyword_num FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword_num,
+        			COUNT(*) count,
+        			ROW_NUMBER() OVER(PARTITION BY nation_num ORDER BY COUNT(*) DESC) rank,
+        			AVG(ar.emotion_point) point
+  					FROM used_keyword uk, used_location ul, article ar, location lo
+					WHERE uk.article_num = ar.article_num
+					AND ar.article_num = ul.article_num
+					AND ul.location_num = lo.location_num
+					GROUP BY keyword_num, nation_num) WHERE rank=1
+				) t,
+				 (SELECT cap.nation_num as nation_num, 
+				 		cap.latitude as latitude, 
+				 		cap.longitude as longitude 
+				 	FROM capital cap
+				 ) cap
+  			where cap.nation_num = t.nation_num
+	</select>
+	 
+	 
+	<select id = "selectRankKeyword"  resultType="RankKeyword">
+	<![CDATA[
+		select ukn.keyword_num keyword_num, k.us_keyword keyword 
+		from 
+			(select uk.keyword_num, count(uk.keyword_num) from used_keyword uk group by uk.keyword_num order by count(uk.keyword_num) desc) ukn,
+			keyword k 
+		where rownum < 11 
+		and ukn.keyword_num = k.keyword_num
+	]]>
+	</select>
+	
+	 
+	<select id = "keywordFilter" parameterType="map" resultType="Keyword">
+	
+		select t.keyword_num, t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude, t.point point
+		from
+			(SELECT nation_num,keyword, keyword_num, point
+			FROM
+				(SELECT nation_num,
+        			(SELECT us_keyword FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword,
+        			(SELECT keyword_num FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword_num,
+        			COUNT(*) count,
+        			ROW_NUMBER() OVER(PARTITION BY nation_num ORDER BY COUNT(*) DESC) rank,
+        			AVG(ar.emotion_point) point
+  					FROM used_keyword uk, used_location ul, article ar, location lo
+					WHERE uk.article_num = ar.article_num
+					AND ar.article_num = ul.article_num
+					AND ul.location_num = lo.location_num
+					<if test = "division_start_num != 0 ">
+					AND ar.division_num &gt;= #{division_start_num}
+					AND ar.division_num &lt; #{division_end_num}
+					</if>
+					<if test = "broadcast_num != 0 ">
+					AND ar.broadcast_num = #{broadcast_num}
+					</if>
+					<if test = "division_num != 0 ">
+					AND ar.division_num = #{division_num}
+					</if>
+					<if test = "fromDate != 0">
+					AND ar.writed_data &gt;= to_date(#{fromDate},'YYMMDD')
+					</if>
+					<if test = "toDate != 0">
+					AND ar.writed_data &lt;= to_date(#{toDate},'YYMMDD')
+					</if>
+					GROUP BY keyword_num, nation_num) WHERE rank=1
+				) t,
+				 (SELECT cap.nation_num as nation_num, 
+				 		cap.latitude as latitude, 
+				 		cap.longitude as longitude 
+				 	FROM capital cap
+				 ) cap
+  			where cap.nation_num = t.nation_num
+
+	</select>
+	
+	 
+	<select id = "selectRealKeyword"  resultType="RealKeyword">
+	<![CDATA[
+		select realtime_num ,realtime_word keyword, to_char(realtime_date,'YYYY/MM/DD HH24:mm') realTime
+		from realtime_word 
+		where rownum<11 
+		order by realtime_date desc
+	]]>
+	</select>
+	
+	<select id = "selectArticleFromKeyword" parameterType="int" resultType="Article">
+	<![CDATA[
+		select aan article_num,
+	 			adn division_num, 
+				at title, 
+				atext text, 
+				awd writed_date, 
+				aep emotion_point, 
+				url 
+		from 
+				(select ar.article_num aan,
+					 ar.division_num adn, 
+					ar.title at, 
+					ar.text atext, 
+					to_char(ar.writed_date,'YYYY/MM/DD') awd,
+					ar.emotion_point aep, 
+					ar.url url
+				from article ar, 
+					used_keyword uk 
+				where uk.keyword_num = #{keyword_num} 
+				and ar.article_num=uk.article_num 
+				order by writed_date desc) 
+		where rownum < 9
+	]]>
+	</select>
+	
+	<select id = "selectDivision"  parameterType="int" resultType="Menu">
+		SELECT DIVISION_NUM divisionNum, DIVISION_NAME divisionName
+		FROM DIVISION
+		WHERE NATION_NUM = #{nationNum}
+		
+	</select>
+	
+	<select id = "selectBroadcast"  parameterType="int" resultType="Menu">
+		SELECT BROADCAST_NUM broadcastNum, BROADCAST_NAME broadcastName
+		FROM BROADCAST
+		WHERE NATION_NUM = #{nationNum}
+		
+	</select>
+	
+	<select id = "selectScrapOne"  parameterType = "Scrap" resultType="Scrap" >
+		SELECT scrap_num, article_num, scrap_date, userid
+		FROM SCRAP
+		WHERE article_num = #{article_num} 
+		AND userid = #{userid}
+		
+	</select>
+	
+	
+	<insert id="insertScrap" parameterType = "Scrap" >
+	
+	INSERT INTO SCRAP VALUES 
+	(
+		scrap_num_seq.nextval
+		, #{article_num}
+		, sysdate
+		, #{userid}
+	)
+	</insert>
+	
+	<select id = "selectKeywordNum" parameterType="map" resultType = "int">
+		select mm.kn keywordNum from (select count(article.article_num) c, uk.keyword_num kn
+		from article, used_keyword uk,
+		(select keyword_num from keyword where upper(ko_keyword) like '%'||#{keyword}||'%' or upper(us_keyword) like '%'||#{keyword}||'%' or upper(jp_keyword) like '%'||#{keyword}||'%' or upper(ch_keyword) like '%'||#{keyword}||'%') k
+		where uk.keyword_num = k.keyword_num 
+		and article.article_num = uk.article_num 
+		group by uk.keyword_num 
+		order by c desc) mm 
+		where rownum = 1
+	</select> 
+	
+	<select id = "selectArticleFromSearch" parameterType="map" resultType="Article">
+		select ar.article_num,
+	 			ar.division_num, 
+				ar.title, 
+				ar.text, 
+				ar.writed_date, 
+				ar.emotion_point, 
+				ar.url 
+		from article ar, 
+			(select article_num 
+			from used_keyword uk 
+			where uk.keyword_num = ${keyword_num}) ukk 
+		where ar.article_num = ukk.article_num
+		<if test = "division_start_num != 0 ">
+		AND ar.division_num &gt;= #{division_start_num}
+		AND ar.division_num &lt; #{division_end_num}
+		</if>
+		<if test = "broadcast_num != 0 ">
+		AND ar.broadcast_num = #{broadcast_num}
+		</if>
+		<if test = "division_num != 0 ">
+		AND ar.division_num = #{division_num}
+		</if>
+		<if test = "fromDate != 0">
+		AND ar.writed_data &gt;= to_date(#{fromDate},'YYMMDD')
+		</if>
+		<if test = "toDate != 0">
+		AND ar.writed_data &lt;= to_date(#{toDate},'YYMMDD')
+		</if>
+		AND rownum &lt; 9
+		order by ar.writed_date desc
+	</select>
+
+	<!-- 고규민 -->
+	<select id="selectNationRealKeyword" resultType="RealKeyword">
+    <![CDATA[
+   	  select * from (
+	      select realtime_num, realtime_word keyword,
+	         to_char(realtime_date,'YYYY/mm/dd hh24:mi') realTime
+	      from realtime_word 
+	      where nation_num = #{nationNum}
+	      order by realtime_date desc, rank asc
+      ) where rownum < 11
+    ]]>
+	</select>
+	
+	
+</mapper>
