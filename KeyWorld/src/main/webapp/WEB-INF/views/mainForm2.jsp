@@ -128,7 +128,7 @@ section#menu_left ul{z-index:200;}
 #main-menu{
     position:absolute;
     top:0px;
-    left:670px;
+    left:605px;
     width: 100%
 
 }
@@ -232,7 +232,10 @@ div.real_menu{
 	/* border-bottom: 4px solid white; */
 }
 
-
+#clear_li{
+	width : 80px;
+	background-color : rgb(251,207,53) !important;
+}
 
 /*#datep{
     display: block;
@@ -248,7 +251,7 @@ div.real_menu{
        <header class="masthead" id="top" >
            
             <ul id="main-menu" class="sm sm-simple">
-            
+            	<li id="clear_li"><a href="#" >Clear</a></li>
                 <li><a href="#" ><div id = "nation">Nation</div></a>
                     
                 <ul class = 'nation'>
@@ -270,8 +273,8 @@ div.real_menu{
                 </li>
                 <li><a href="#">Oceania</a>
                     <ul>
-                <li><a href="#"><input type="radio" name="radio1" id="radio1" class="Filter" value="12"><label for = "Australia">Australia</label></a></li>
-                <li><a href="#"><input type="radio" name="radio1" id="radio1" class="Filter" value="174"><label for = "New Zealand">New Zealand</label></a></li>
+                <li><a href="#"><input type="radio" name="radio1" id="Australia" class="Filter" value="12"><label for = "Australia">Australia</label></a></li>
+                <li><a href="#"><input type="radio" name="radio1" id="New Zealand" class="Filter" value="174"><label for = "New Zealand">New Zealand</label></a></li>
                 
                 
                 </ul>
@@ -328,7 +331,7 @@ div.real_menu{
 <li>
 <div class="dropdown">
   <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" style = "background-color :rgb(251,207,53);width : 115px;">
-    <span id = "language">Language</span>
+    <span id = "language" class="us">Language</span>
     <span class="caret"></span>
   </button>
   <!-- 언어선택부분 : ul태그 였으나, 기존 메뉴와 충돌로 인해 임시로 ol태그로 변경하여 해결. -->
@@ -646,6 +649,24 @@ div.real_menu{
       });//고규민      
       
       $("div#earth_div > canvas").attr("height", "737");
+      
+      $("#main-menu > li > a").on('click',function(){
+    		$("div#nation").empty();
+    		$("div#nation").append("Nation");
+    		$("#broadcast").empty();
+    		$("#broadcastList").empty();
+    		$("#broadcast").append("Broadcast");
+    		$("#division").empty();
+    		$("#divisionList").empty();
+    		$("#division").append("Division");
+    		$('input:radio[name=radio1]').prop('checked', false);
+    		$("#clear1").css("display", "none");
+    		$("#datepicker-example7-start").empty();
+			$("#datepicker-example7-end").empty();
+			var type = $('#language').attr('class');
+			markerFilter($('#language').attr('class'));
+    		ranklist_language_filtering(type);
+      });
       
   }
   
@@ -1147,24 +1168,92 @@ function realchart(){
     	//언어선택 드랍다운.
     	$('#Korean').on('click', function(){
     		$('#language').empty();
-    		languageFilter('ko');
     		$('#language').append("Korean");
+    		var type = 'ko';
+    		$('#language').attr('class','ko');
+    		markerFilter($('#language').attr('class'));
+    		ranklist_language_filtering(type);
     	});
 		$('#English').on('click', function(){
 			$('#language').empty();
-			languageFilter('us');
-    		$('#language').append("English");		
+    		$('#language').append("English");
+    		var type = 'us';
+			$('#language').attr('class','us');
+    		markerFilter($('#language').attr('class'));
+    		ranklist_language_filtering(type);
 		});
 		$('#Japanese').on('click', function(){
 			$('#language').empty();
-			languageFilter('jp');
     		$('#language').append("Japanese");
+    		var type = 'jp';
+			$('#language').attr('class','jp');
+    		markerFilter($('#language').attr('class'));
+    		ranklist_language_filtering(type);
 		});
 		$('#Chinese').on('click', function(){
 			$('#language').empty();
-			languageFilter('ch');
     		$('#language').append("Chinese");
+    		var type = 'ch';
+			$('#language').attr('class','ch');
+    		markerFilter($('#language').attr('class'));
+    		ranklist_language_filtering(type);
 		});
+		
+		//language 선택시 ranking keyword 언어필터링 ajax
+		function ranklist_language_filtering(inputType){
+			var type = inputType;
+			var nation_num = $('input:radio[name=radio1]:checked').attr('value');
+		    //현재 선택된 broadcast 값 
+		    var broadcast_num = $('input:radio[name=radio2]:checked').attr("value");
+		    //현재 선택된  division 값
+		    var division_num = $('input:radio[name=radio3]:checked').attr("value");
+		    //현재 선택된 fromDate 값
+		    var start = $("#datepicker-example7-start").val();
+		    //현재 선택된 toDate 값
+		    var end = $("#datepicker-example7-end").val();
+			//현재 선택된 language 값
+			var type = $('#language').attr('class');
+		    
+		    if(typeof nation_num == "undefined"){
+		       nation_num = 0;
+		    } 
+		    if(typeof broadcast_num == "undefined"){
+		       broadcast_num = 0;
+		    }
+		    if(typeof division_num == "undefined"){
+		       division_num = 0;
+		    }
+		    if(start == ""){
+		       start = 0;
+		    }
+		    if(end == ""){
+		       end = 0;
+		    }
+			$.ajax({
+	   	         url: 'keywordRankingLanguageFilter',
+	   	         type: 'POST',
+	   	         data: {
+	   	        	nation_num : nation_num,
+	   	            broadcast_num : broadcast_num,
+	   	            division_num : division_num,
+	   	            fromDate : start,
+	   	            toDate : end,
+	   	            type : type
+	   	         },
+	   	         dataType: 'json',
+	   	         success : function(data){
+	   	        	 $('.ranklist').html('');
+	   	        	 $.each(data, function(idx, val) {
+								$('.ranklist').append("<a href='#' class='a_rank' id='"+val.keyword_num+"'>"+idx+"위 : "+val.keyword+"</a><br/>");
+	   	              });
+	   	         },
+	   	         error : function(){
+	   	            alert("에러!!");
+	   	         }
+	   	      });
+		}
+		
+		
 		//언어선택 드랍다운 css 수정.
 		   $(".dropdown-menu").css('min-width','0');
 		   $(".dropdown-menu").css('padding','0');
@@ -1416,10 +1505,11 @@ function realchart(){
 <script type="text/javascript">
 $(function() {
       $('.nation > li > ul> li > a').on('click', function(){
-   if($('input:radio[name=radio1]').is(':checked')){
+    	
+   		if($('input:radio[name=radio1]').is(':checked')){
   	 
   	 $("#clear1").css("display", "inline");
-
+	 
   	 //체크 되면 버튼 생성.
   	   
        var checked = $('input:radio[name=radio1]:checked').val();
@@ -1427,6 +1517,12 @@ $(function() {
        alert(nation);
        $("div#nation").empty();
        $("div#nation").append(nation);
+       $("#broadcast").empty();
+       $("#broadcast").append("Broadcast");
+       $("#division").empty();
+       $("#division").append("Division");
+       $("#datepicker-example7-start").empty();
+		$("#datepicker-example7-end").empty();
        $.ajax({
       			url : "blist"
       			, type : "get"
@@ -1445,7 +1541,7 @@ $(function() {
   				alert("error")
   			}
   	});
-    var type = 'us';
+    var type = $('#language').attr('class');
     markerFilter(type);
    }       
 });
@@ -1455,18 +1551,17 @@ $('#clear1').on('click', function(){
 	 $("div#nation").empty();
    $("div#nation").append("Nation");
    $("#broadcast").empty();
-	 $("#broadcastList").empty();
+	$("#broadcastList").empty();
    $("#broadcast").append("Broadcast");
    $("#division").empty();
    $("#divisionList").empty();
    $("#division").append("Division");
    $('input:radio[name=radio1]').prop('checked', false);
 	 $("#clear1").css("display", "none");
-	 
 });
      // 필터링 하는 부분.
 	$(".dp_daypicker").click(function(){
-		var type = 'us';
+		var type = $('#language').attr('class');
 		var start = $("#datepicker-example7-start").val();
 		var end = $("#datepicker-example7-end").val();
 		if(start != '' && end != ''){
@@ -1524,7 +1619,7 @@ function dOutput(resp){//데이터를 받는 것이 성공하면 함수를 실�
 });
 };
 function broadcast(){
-	var type = 'us';
+	var type = $('#language').attr('class');
 	if($('input:radio[name=radio2]').is(':checked')){
 		
 		
@@ -1538,7 +1633,7 @@ function broadcast(){
 	}       
 };
 function division(){
-	var type = 'us';
+	var type = $('#language').attr('class');
 	if($('input:radio[name=radio3]').is(':checked')){
 		
 		 
@@ -1554,17 +1649,19 @@ function division(){
 
 function markerFilter(type){
 	alert(type);
-   //현재 선택된 nation 값
-   var nation_num = $('input:radio[name=radio1]:checked').attr('value');
-   //현재 선택된 broadcast 값 
+    //현재 선택된 nation 값
+    var nation_num = $('input:radio[name=radio1]:checked').attr('value');
+    //현재 선택된 broadcast 값 
     var broadcast_num = $('input:radio[name=radio2]:checked').attr("value");
     //현재 선택된  division 값
     var division_num = $('input:radio[name=radio3]:checked').attr("value");
     //현재 선택된 fromDate 값
-   var start = $("#datepicker-example7-start").val();
+    var start = $("#datepicker-example7-start").val();
     //현재 선택된 toDate 값
-   var end = $("#datepicker-example7-end").val();
-
+    var end = $("#datepicker-example7-end").val();
+	//현재 선택된 language 값
+	var type = $('#language').attr('class');
+    
     if(typeof nation_num == "undefined"){
        nation_num = 0;
     } 
@@ -1588,7 +1685,8 @@ function markerFilter(type){
          broadcast_num : broadcast_num,
          division_num : division_num,
          fromDate : start,
-         toDate : end
+         toDate : end,
+         type : type
       },
       dataType: 'json',
       success : function(data){
@@ -1649,6 +1747,29 @@ function markerFilter(type){
          alert("에러!!");
       }
    });  
+    
+    $.ajax({
+        url: 'keywordRankingFilter',
+        type: 'POST',
+        data: {
+           nation_num : nation_num,
+           broadcast_num : broadcast_num,
+           division_num : division_num,
+           fromDate : start,
+           toDate : end,
+           type : type
+        },
+        dataType: 'json',
+        success : function(data){
+        	$('.ranklist').html('');
+	        $.each(data, function(idx, val) {
+				$('.ranklist').append("<a href='#' class='a_rank' id='"+val.keyword_num+"'>"+idx+"위 : "+val.keyword+"</a><br/>");
+	        });
+        },
+        error : function(){
+        	alert("에러!!");
+        }
+    });
     
 }
 
@@ -1713,13 +1834,7 @@ function keywordSearch(){
        
 }
 
-function languageFilter(input_type){
-	var type = input_type;
-	alert(type);
-	
-	
-	
-}
+
 
 
 

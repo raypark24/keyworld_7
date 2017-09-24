@@ -87,7 +87,15 @@ public class CustomerController {
 		List<Keyword> keywordList = repok.selectKeyword();
 		System.out.println(keywordList.toString());
 		System.out.println("11");
-		List<RankKeyword> rankingList = repok.selectRankKeyword();
+		Map<String,Integer> map = new HashMap<String, Integer>();
+		map.put("type", 0);
+		map.put("division_start_num", 0);
+		map.put("division_end_num", 0);
+		map.put("broadcast_num", 0);
+		map.put("division_num", 0);
+		map.put("fromDate", 0);
+		map.put("toDate", 0);
+		List<RankKeyword> rankingList = repok.selectRankKeyword(map);
 		List<RealKeyword> realKeywordList = repok.selectNationRealKeyword(216);
 
 		/*
@@ -295,7 +303,43 @@ public class CustomerController {
 
 		return keywordList;
 	}
+	
+	@RequestMapping(value = "keywordRankingFilter", method = RequestMethod.POST)
+	public @ResponseBody List<RankKeyword> keywordRankingFilter(Locale locale, Model model,
+			@RequestParam(value = "nation_num", defaultValue = "0") int nationNum,
+			@RequestParam(value = "broadcast_num", defaultValue = "0") int broadcastNum,
+			@RequestParam(value = "division_num", defaultValue = "0") int divisionNum,
+			@RequestParam(value = "fromDate", defaultValue = "0") String fromDate,
+			@RequestParam(value = "toDate", defaultValue = "0") String toDate,
+			@RequestParam(value = "type", defaultValue = "0") String type) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		// 기사 필터링
+		System.out.println("들어온 nationNum : " + nationNum);
+		System.out.println("들어온 language(한중일영-1234) : "+ type);
+		map = filterMap(nationNum, broadcastNum, divisionNum, fromDate, toDate);
+		if(type.equals("ko")){
+			map.put("type",	1);
+		}
+		else if(type.equals("ch")){
+			map.put("type", 2);
+		}
+		else if(type.equals("jp")){
+			map.put("type", 3);
+		}
+		else if(type.equals("us")){
+			map.put("type", 4);
+		}
+		else{
+			map.put("type", 0);
+		}
+		System.out.println("키워드 랭킹 필터링");
+		System.out.println(map.toString());
+		List<RankKeyword> rankingList = repok.selectRankKeyword(map);
+		System.out.println("랭킹필터링완료 : " + rankingList.toString());
 
+		return rankingList;
+	}
+	
 	// 스크랩한 기사 번호를 db에 넣는다.
 	@RequestMapping(value = "scraping", method = RequestMethod.POST)
 	public @ResponseBody String scraping(Locale locale, Model model, HttpSession session,
@@ -616,6 +660,35 @@ public class CustomerController {
 		html = html.replace("\r\n","");
 		System.out.println(html.length());
 		return html;
+	}
+	@RequestMapping(value = "keywordRankingLanguageFilter", method = RequestMethod.POST)
+	public @ResponseBody List<RankKeyword> keywordRankingLanguageFilter(Locale locale, Model model,
+			@RequestParam(value = "nation_num", defaultValue = "0") int nationNum,
+			@RequestParam(value = "broadcast_num", defaultValue = "0") int broadcastNum,
+			@RequestParam(value = "division_num", defaultValue = "0") int divisionNum,
+			@RequestParam(value = "fromDate", defaultValue = "0") String fromDate,
+			@RequestParam(value = "toDate", defaultValue = "0") String toDate,
+			@RequestParam(value = "type", defaultValue = "0") String inputType) {
+		System.out.println("keywordRankingLanguageFilter에 들어옴.");
+		Map<String, Integer> map = filterMap(nationNum, broadcastNum, divisionNum, fromDate, toDate);
+		if(inputType.equals("ko")){
+			map.put("type", 1);
+		}
+		else if(inputType.equals("ch")){
+			map.put("type", 2);
+		}
+		else if(inputType.equals("jp")){
+			map.put("type", 3);
+		}
+		else if(inputType.equals("us")){
+			map.put("type", 4);
+		}
+		else{
+			map.put("type", 0);
+		}
+		List<RankKeyword> rankingList = repok.selectRankKeyword(map);
+		
+		return rankingList;
 	}
 	
 }

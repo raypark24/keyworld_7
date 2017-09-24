@@ -4,68 +4,6 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="sesoc.global.keyworld.dao.KeywordDAO">
-	
-	<!-- 한국 -->
-	<!-- 
-	<select id = "selectKeyword"  resultType="Keyword">
-	<![CDATA[
-		select t.keyword_num, t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude, t.point point
-		from
-			(SELECT nation_num,keyword, keyword_num, point
-			FROM
-				(SELECT nation_num,
-        			(SELECT ko_keyword FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword,
-        			(SELECT keyword_num FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword_num,
-        			COUNT(*) count,
-        			ROW_NUMBER() OVER(PARTITION BY nation_num ORDER BY COUNT(*) DESC) rank,
-        			AVG(ar.emotion_point) point
-  					FROM used_keyword uk, used_location ul, article ar, location lo
-					WHERE uk.article_num = ar.article_num
-					AND ar.article_num = ul.article_num
-					AND ul.location_num = lo.location_num
-					AND ar.division_num>0
-					ANd ar.division_num<11
-					GROUP BY keyword_num, nation_num) WHERE rank=1
-				) t,
-				 (SELECT cap.nation_num as nation_num, 
-				 		cap.latitude as latitude, 
-				 		cap.longitude as longitude 
-				 	FROM capital cap
-				 ) cap
-  			where cap.nation_num = t.nation_num
-  	]]>
-	</select>
-	 -->
-	
-	<!-- 일본 -->
-	<!-- <select id = "selectKeyword"  resultType="Keyword">
-	<![CDATA[
-		select t.keyword_num, t.nation_num nation_num, t.keyword keyword, cap.latitude latitude, cap.longitude longitude, t.point point
-		from
-			(SELECT nation_num,keyword, keyword_num, point
-			FROM
-				(SELECT nation_num,
-        			(SELECT jp_keyword FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword,
-        			(SELECT keyword_num FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword_num,
-        			COUNT(*) count,
-        			ROW_NUMBER() OVER(PARTITION BY nation_num ORDER BY COUNT(*) DESC) rank,
-        			AVG(ar.emotion_point) point
-  					FROM used_keyword uk, used_location ul, article ar, location lo
-					WHERE uk.article_num = ar.article_num
-					AND ar.article_num = ul.article_num
-					AND ul.location_num = lo.location_num
-					AND ar.division_num>10
-					ANd ar.division_num<19
-					GROUP BY keyword_num, nation_num) WHERE rank=1
-				) t,
-				 (SELECT cap.nation_num as nation_num, 
-				 		cap.latitude as latitude, 
-				 		cap.longitude as longitude 
-				 	FROM capital cap
-				 ) cap
-  			where cap.nation_num = t.nation_num
-  	]]>
-	</select> -->
 	<!-- 전체 기사  us_keyword -->
 	 
 		<select id = "selectKeyword"  resultType="Keyword">
@@ -81,7 +19,7 @@
         			AVG(ar.emotion_point) point
   					FROM used_keyword uk, used_location ul, article ar, location lo
 					WHERE uk.article_num = ar.article_num
-					AND ar.article_num = ul.article_num
+					and ar.article_num = ul.article_num
 					AND ul.location_num = lo.location_num
 					GROUP BY keyword_num, nation_num) WHERE rank=1
 				) t,
@@ -94,15 +32,52 @@
 	</select>
 	 
 	 
-	<select id = "selectRankKeyword"  resultType="RankKeyword">
-	<![CDATA[
-		select ukn.keyword_num keyword_num, k.us_keyword keyword 
+	<select id = "selectRankKeyword" parameterType="map" resultType="RankKeyword">
+		select ukn.keyword_num keyword_num,
+  		<if test = "type == 0 ">
+  			k.us_keyword keyword
+  		</if>
+  		<if test = "type == 1 ">
+  			k.ko_keyword keyword
+  		</if>
+  		<if test = "type == 2 ">
+  			k.ch_keyword keyword
+  		</if>
+  		<if test = "type == 3 ">
+  			k.jp_keyword keyword
+  		</if>
+  		<if test = "type == 4 ">
+  			k.us_keyword keyword
+  		</if>
 		from 
-			(select uk.keyword_num, count(uk.keyword_num) from used_keyword uk group by uk.keyword_num order by count(uk.keyword_num) desc) ukn,
+			(select uk.keyword_num, count(uk.keyword_num) 
+				from used_keyword uk,
+				(select article_num 
+					from article ar
+					where ar.article_num &gt; 0
+					<if test = "division_start_num != 0 ">
+					AND ar.division_num &gt;= #{division_start_num}
+					AND ar.division_num &lt; #{division_end_num}
+					</if>
+					<if test = "broadcast_num != 0 ">
+					AND ar.broadcast_num = #{broadcast_num}
+					</if>
+					<if test = "division_num != 0 ">
+					AND ar.division_num = #{division_num}
+					</if>
+					<if test = "fromDate != 0">
+					AND ar.writed_date &gt;= to_date(#{fromDate},'YYMMDD')
+					</if>
+					<if test = "toDate != 0">
+					AND ar.writed_date &lt;= to_date(#{toDate},'YYMMDD')
+					</if>
+				) arr
+				where arr.article_num = uk.article_num
+				group by uk.keyword_num 
+				order by count(uk.keyword_num) desc) ukn,
 			keyword k 
-		where rownum < 8 
+		where rownum &lt; 8 
 		and ukn.keyword_num = k.keyword_num
-	]]>
 	</select>
 	
 	 
@@ -118,12 +93,17 @@
         				us_keyword
         			</if>
         			<if test = "type == 1 ">
-        				us_keyword
+        				ko_keyword
+        			</if>
+        			<if test = "type == 2 ">
+        				ch_keyword
+        			</if>
+        			<if test = "type == 3 ">
+        				jp_keyword
         			</if>
         			<if test = "type == 4 ">
         				us_keyword
         			</if>
-        			
         			FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword,
         			(SELECT keyword_num FROM keyword ke WHERE ke.keyword_num = uk.keyword_num) keyword_num,
         			COUNT(*) count,

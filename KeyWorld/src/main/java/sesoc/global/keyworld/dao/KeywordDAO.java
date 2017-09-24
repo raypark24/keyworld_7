@@ -14,7 +14,7 @@ public interface KeywordDAO {
 	
 	public List<Keyword> selectKeyword();
 	public int selectKeywordNum(Map<String,String> tempMap);
-	public List<RankKeyword> selectRankKeyword();
+	public List<RankKeyword> selectRankKeyword(Map<String,Integer> map);
 	public List<RealKeyword> selectRealKeyword();
 	public List<Keyword> keywordFilter(Map<String,Integer> map);
 	public List<Article> selectArticleFromKeyword(int keyword_num);

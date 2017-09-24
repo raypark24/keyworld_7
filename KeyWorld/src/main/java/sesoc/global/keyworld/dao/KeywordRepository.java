@@ -29,11 +29,11 @@ public class KeywordRepository {
 		return keywordList;
 	}
 
-	public List<RankKeyword> selectRankKeyword() {
+	public List<RankKeyword> selectRankKeyword(Map<String,Integer> map) {
 
 		KeywordDAO dao = sqlSession.getMapper(KeywordDAO.class);
 		System.out.println("12");
-		List<RankKeyword> keywordList = dao.selectRankKeyword();
+		List<RankKeyword> keywordList = dao.selectRankKeyword(map);
 		System.out.println("34");
 		return keywordList;
 	}
