@@ -13,6 +13,7 @@ import sesoc.global.keyworld.vo.Scrap;
 public interface KeywordDAO {
 	
 	public List<Keyword> selectKeyword();
+	public int selectKeywordNum(Map<String,String> tempMap);
 	public List<RankKeyword> selectRankKeyword();
 	public List<RealKeyword> selectRealKeyword();
 	public List<Keyword> keywordFilter(Map<String,Integer> map);
@@ -21,4 +22,7 @@ public interface KeywordDAO {
 	public List<Menu> selectDivision(int nationNum);
 	public int insertScrap(Scrap scrap);
 	public Scrap selectScrapOne(Scrap scrap);
+	public List<Article> selectArticleFromSearch(Map<String,Integer> map);
+	public List<RealKeyword> selectNationRealKeyword(int nationNum);//고규민
+	
 }

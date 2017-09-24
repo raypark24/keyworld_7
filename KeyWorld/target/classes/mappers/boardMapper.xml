@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sesoc.global.keyworld.dao.BoardDAO">
+	
+	<select id="select" parameterType="map" resultType="Board">
+	
+		SELECT BOARD_NUM, CONTENT, TITLE, TO_CHAR(WRITED_DATE, 'YYYY-MM-DD') WRITED_DATE, RC_COUNT, VIEW_COUNT, ATTACHED_URL, ARTICLE_NUM, USERID FROM BOARD 
+		WHERE
+			<choose>
+				<when test="searchtype == 'title'"> TITLE </when>
+				<when test="searchtype == 'userid'"> USERID </when>
+				<when test="searchtype == 'content'"> CONTENT </when>
+			</choose>
+			LIKE '%'|| #{searchword} ||'%'
+		ORDER BY WRITED_DATE DESC
+	</select>
+	
+	<select id="selectOne" parameterType="int" resultType="Board">
+		SELECT * FROM BOARD WHERE BOARD_NUM = #{boardnum}	
+	</select>
+	
+	<insert id="insert" parameterType="Board">
+		INSERT INTO BOARD
+		(
+			BOARD_NUM
+			, CONTENT
+			, TITLE
+			, WRITED_DATE
+			<if test="attached_url != null">
+				, ATTACHED_URL
+			</if>
+			, ARTICLE_NUM
+			, USERID
+		)
+		VALUES 
+		(
+			BOARD_NUM_SEQ.NEXTVAL
+			, #{content}
+			, #{title}
+			, TO_DATE(SYSDATE, 'yyyy-MM-dd')
+			<if test="attached_url != null">
+				, #{attached_url}
+			</if> 
+			, #{article_num}
+			, #{userid}
+		)
+	</insert>
+	
+	<update id="update" parameterType="Board">
+		UPDATE BOARD SET 
+		CONTENT = #{content}
+		, TITLE = #{title}
+		, ATTACHED_URL = #{attatched_url}
+		, ARTICLE_NUM = , #{article_num}
+		 WHERE BOARD_NUM = #{boardnum}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		DELETE BOARD WHERE BOARD_NUM = #{boardnum}
+	</delete>
+	
+<!-- 	hitCount 추가		 -->
+	
+	<!-- 전체 글 개수  -->
+	<select id="getBoardCount" parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM BOARD 
+		WHERE
+			<choose>
+				<when test="searchtype == 'title'"> TITLE </when>
+				<when test="searchtype == 'userid'"> USERID </when>
+				<when test="searchtype == 'content'"> CONTENT </when>
+			</choose>
+			LIKE '%'|| #{searchword} ||'%'
+		ORDER BY WRITED_DATE DESC
+	</select>
+
+	<select id="getScrapCount" parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM SCRAP 
+		WHERE USERID = #{userid} AND
+			<if test="searchtype == 'title'">TITLE</if>
+			LIKE '%'|| #{searchword} ||'%'
+		ORDER BY WRITED_DATE DESC
+	</select>
+	
+	<select id="scrapList" parameterType="map" resultType="ScrapedArticle">
+		SELECT S.ARTICLE_NUM, S.SCRAP_DATE, S.USERID, A.ARTICLE_NUM, A.TITLE AS ARTICLE_TITLE, A.URL AS ARTICLE_URL FROM ARTICLE A, SCRAP S 
+		WHERE S.USERID = #{userid} AND S.ARTICLE_NUM = A.ARTICLE_NUM AND
+			<if test="searchtype == 'title'">A.TITLE</if>
+			LIKE '%'|| #{searchword} ||'%'
+		ORDER BY SCRAP_DATE DESC
+	</select>
+</mapper>

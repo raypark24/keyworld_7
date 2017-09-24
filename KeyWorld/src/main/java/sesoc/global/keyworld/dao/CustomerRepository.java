@@ -36,7 +36,24 @@ public class CustomerRepository {
 			return customer;
 		}
 		
-	
+		public int insert(Customer customer) {
+			
+			System.out.println("Repository insert method activate");
+			System.out.println(customer);
+			CustomerDAO dao = sqlSession.getMapper(CustomerDAO.class);
+			int result = dao.insert(customer);
+			System.out.println("Repository insert result");
+			System.out.println(result);
+			return result;
+		}
+			
+		public int idCheck(String userid) {
+			System.out.println("idCheck repository / "+userid);
+			CustomerDAO dao = sqlSession.getMapper(CustomerDAO.class);
+			int result = dao.idcheck(userid);
+			
+			return result;
+		}
 	
 
 }

@@ -14,9 +14,9 @@
 		<typeAlias type="sesoc.global.keyworld.vo.Article" alias = "Article" />
 		<typeAlias type="sesoc.global.keyworld.vo.Menu" alias = "Menu"/>
 		<typeAlias type="sesoc.global.keyworld.vo.Scrap" alias = "Scrap"/>
-		
-		<!-- <typeAlias type="sesoc.global.test.vo.Board" alias = "Board"/>
-		<typeAlias type="sesoc.global.test.vo.Notice" alias = "Notice"/>
+		<typeAlias type="sesoc.global.keyworld.vo.Board" alias = "Board"/>
+		<typeAlias type="sesoc.global.keyworld.vo.ScrapedArticle" alias = "ScrapedArticle"/>
+		<!--<typeAlias type="sesoc.global.test.vo.Notice" alias = "Notice"/>
 		<typeAlias type="sesoc.global.test.vo.Reply" alias = "Reply"/> -->
 		
 	</typeAliases>
@@ -25,8 +25,8 @@
     
     <mapper resource="mappers/customerMapper.xml" />
     <mapper resource="mappers/keywordMapper.xml" />
-  <!--   <mapper resource="mappers/boardMapper.xml"/>
-    <mapper resource="mappers/noticeMapper.xml"/>
+	<mapper resource="mappers/boardMapper.xml"/>
+    <!-- <mapper resource="mappers/noticeMapper.xml"/>
     <mapper resource="mappers/replyMapper.xml"/>  -->
  
   </mappers>

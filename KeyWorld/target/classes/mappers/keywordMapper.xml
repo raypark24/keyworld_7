@@ -218,4 +218,63 @@
 		, #{userid}
 	)
 	</insert>
+	
+	<select id = "selectKeywordNum" parameterType="map" resultType = "int">
+		select mm.kn keywordNum from (select count(article.article_num) c, uk.keyword_num kn
+		from article, used_keyword uk,
+		(select keyword_num from keyword where upper(ko_keyword) like '%'||#{keyword}||'%' or upper(us_keyword) like '%'||#{keyword}||'%' or upper(jp_keyword) like '%'||#{keyword}||'%' or upper(ch_keyword) like '%'||#{keyword}||'%') k
+		where uk.keyword_num = k.keyword_num 
+		and article.article_num = uk.article_num 
+		group by uk.keyword_num 
+		order by c desc) mm 
+		where rownum = 1
+	</select> 
+	
+	<select id = "selectArticleFromSearch" parameterType="map" resultType="Article">
+		select ar.article_num,
+	 			ar.division_num, 
+				ar.title, 
+				ar.text, 
+				ar.writed_date, 
+				ar.emotion_point, 
+				ar.url 
+		from article ar, 
+			(select article_num 
+			from used_keyword uk 
+			where uk.keyword_num = ${keyword_num}) ukk 
+		where ar.article_num = ukk.article_num
+		<if test = "division_start_num != 0 ">
+		AND ar.division_num &gt;= #{division_start_num}
+		AND ar.division_num &lt; #{division_end_num}
+		</if>
+		<if test = "broadcast_num != 0 ">
+		AND ar.broadcast_num = #{broadcast_num}
+		</if>
+		<if test = "division_num != 0 ">
+		AND ar.division_num = #{division_num}
+		</if>
+		<if test = "fromDate != 0">
+		AND ar.writed_data &gt;= to_date(#{fromDate},'YYMMDD')
+		</if>
+		<if test = "toDate != 0">
+		AND ar.writed_data &lt;= to_date(#{toDate},'YYMMDD')
+		</if>
+		AND rownum &lt; 9
+		order by ar.writed_date desc
+	</select>
+
+	<!-- 고규민 -->
+	<select id="selectNationRealKeyword" resultType="RealKeyword">
+    <![CDATA[
+   	  select * from (
+	      select realtime_num, realtime_word keyword,
+	         to_char(realtime_date,'YYYY/mm/dd hh24:mi') realTime
+	      from realtime_word 
+	      where nation_num = #{nationNum}
+	      order by realtime_date desc, rank asc
+      ) where rownum < 11
+    ]]>
+	</select>
+	
+	
 </mapper>

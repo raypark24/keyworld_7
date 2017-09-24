@@ -172,7 +172,8 @@ margin: 0 3px 0 0;
 }
 
 .we-pp-wrapper{
-	background-color : rgba(255,255,255,0.1) !important;
+   background-color : rgba(255,255,255,0.3) !important;
+   width : fit-content !important;
 }
 .we-pp{
 	
@@ -203,6 +204,21 @@ b.redtext{
 }
 .title_a{
 	color : #99FFCC !important;
+}
+.title_a_real{
+	color : #99FFCC !important;
+}
+/*YSH*/
+div.flags{
+	white-space: nowrap;
+}
+
+div.real_menu{
+	float:left;
+}
+
+.selected_nation{
+	border-bottom: 4px solid white;
 }
 
 
@@ -287,11 +303,11 @@ b.redtext{
                 </ul>
                 </li>
                 <li>
-                <form class="form-inline my-2 my-lg-0 mr-lg-2">
+            <form class="form-inline my-2 my-lg-0 mr-lg-2">
               <div class="input-group">
                 <input type="text" class="form-control" placeholder="Search for..."/>
                 <span class="input-group-btn">
-                  <button class="btn btn-primary" type="button">
+                  <button class="btn btn-primary" onclick="keywordSearch();" type="button">
                     <i class="fa fa-search"></i>
                   </button>
                 </span>
@@ -341,7 +357,7 @@ b.redtext{
   function initialize() {
 	  
 	  
-     var earth = new WE.map('earth_div', {'tilting':false, 'sky': true, 'atmosphere': true});
+     var earth = new WE.map('earth_div', {'tilting':false, 'sky': true, 'atmosphere': true, 'center' : [25.69056,51.43444], 'zoom' : 2.75 });
       var natural = WE.tileLayer('http://data.webglearth.com/natural-earth-color/{z}/{x}/{y}.jpg', {
           tileSize: 256,
           tms: true
@@ -354,17 +370,19 @@ b.redtext{
      
       
      
+      //주세휘
       <c:forEach items="${keyList}" var="keyword">
-  		<c:if test="${keyword.point eq null}">
-			WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='blacktext' id='${keyword.keyword_num}'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
-		</c:if>
-      	<c:if test="${keyword.point > 0}">
-      		WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='bluetext' id='${keyword.keyword_num}'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
-      	</c:if>
-      	<c:if test="${keyword.point < 0}">
-  			WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='redtext' id='${keyword.keyword_num}'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
-  		</c:if>
+        <c:if test="${keyword.point eq null}">
+         WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:15px;'><b class='blacktext' id='${keyword.keyword_num}'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 100, closeButton: false}).openPopup();
+      </c:if>
+         <c:if test="${keyword.point > 0}">
+            WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:15px;'><b class='bluetext' id='${keyword.keyword_num}'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 100, closeButton: false}).openPopup();
+         </c:if>
+         <c:if test="${keyword.point < 0}">
+           WE.marker(["${keyword.latitude}", "${keyword.longitude}"],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:15px;'><b class='redtext' id='${keyword.keyword_num}'>"+"${keyword.keyword}"+"<b></span>", {maxWidth: 100, closeButton: false}).openPopup();
+        </c:if>
       </c:forEach>
+    //주세휘//주세휘
       
       
       
@@ -386,6 +404,12 @@ b.redtext{
     	 $(this).css('z-index','200000');
       });
       
+      $(".we-pp").mouseout(function(){
+     	 $(".we-pp-wrapper").css('z-index','0');
+     	 $(".we-pp-content").css('z-index','0');
+     	 $(this).css('z-index','0');
+       });
+      
       $(".we-pp-wrapper").click(function(){
     	  $("#articleTable").html("<tr><th>번 호</th><th>기사 제목</th></tr>");
     	  var text = $(this).children().children().children().first().attr("id");
@@ -397,6 +421,7 @@ b.redtext{
      		 },
      		 dataType: 'json',
      		 success : function(data){
+     				$("#articleTable").html("");
     			 	$.each(data, function(idx, val) {
     			 		$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+","+val.article_num+");' id='"+val.url+"' class='title_a'>"+val.title+"</a></td> </tr>")
     			 	});
@@ -407,13 +432,10 @@ b.redtext{
      	  });
       });
       
-      $(".we-pp").mouseout(function(){
-    	 $(".we-pp-wrapper").css('z-index','0');
-    	 $(".we-pp-content").css('z-index','0');
-    	 $(this).css('z-index','0');
-      });
+      
       
       $(".a_rank").click(function(){
+    	  $("#articleTable").html("");
     	  $("#articleTable").html("<tr><th>번 호</th><th>기사 제목</th></tr>");
     	  $.ajax({
     		 url: 'rkeywordSelect',
@@ -434,10 +456,139 @@ b.redtext{
     	  //$(".we-pp").css("display","None");
 
       });
+      
+      //윤상혁
+      $(".flag_icon").click(function(){
+    	  //전체 아이콘의 클래스속성을 초기화
+    	  $(".flag_icon").removeClass('selected_nation');
+    	  //선택된 아이콘만 커지도록 하기 위해 클래스명 부여
+    	  $(this).addClass('selected_nation');
+    	  var nation_num = $(this).attr('nation_num');
+    	  //alert(nation_num);
+    	  $.ajax({
+    		 url: "switchnation"
+    		 , data: 'nation_num='+nation_num
+    		 , dataType: "json"
+    		 , success: function(data){
+    			    $(".reallist").html('');
+    			 $.each(data, function(idx, val) {
+                     if(val.realtime_num == 0){
+                        $(".nation_curr").empty();
+                        $(".nation_curr").text(val.keyword);
+                        $(".realtime_date").text(val.realTime);
+                     }
+                     else{
+                  	   $(".reallist").append('<tr><td><a href="#" class="a_realrank" onclick="print_realword_list('+'\''+val.keyword+'\''+');">'+(idx+1)+'위 : '+val.keyword+'</a></td></tr>');
+                     }
+                 });
+    		 }, error: function(){
+    				alert("error"); 
+    		 }
+    	  });
+      });
+      //윤상혁
+      
+      $(".forward").click(function(){
+    	  movenation('forward');
+      });
+      $(".backward").click(function(){
+    	  movenation('backward');
+      });//고규민      
+      
+      $("div#earth_div > canvas").attr("height", "737");
+      
   }
   
+  function movenation(direction){
+	  var nation = $(".nation_curr").text();
+      //alert(nation);
+    $(".reallist").html('');
+       $.ajax({
+              url : "movenation"
+              , type : "post"
+              , data : 
+                {
+                   'direction' : direction,
+                  'curr_nation' : nation
+                }
+              , dataType : "json"
+              , success : function(data){
+                //alert("success");
+                 $.each(data, function(idx, val) {
+                 if(val.realtime_num == 0){
+                    $(".nation_curr").empty();
+                    $(".nation_curr").text(val.keyword);
+                    $(".realtime_date").text(val.realTime);
+                 }
+                 else{
+              	   $(".reallist").append('<tr><td><a href="#" class="a_realrank" onclick="print_realword_list('+'\''+val.keyword+'\''+');">'+(idx+1)+'위 : '+val.keyword+'</a></td></tr>');
+                 }
+                 });
+              }
+              , error : function(){
+                 alert("error")
+              }
+        });
+  } //고규민
+  /*
+  function switchnation(nation_num){
+      alert(nation);
+    $(".reallist").html('');
+       $.ajax({
+              url : "movenation"
+              , type : "post"
+              , data : 
+                {
+                   'direction' : direction,
+                  'curr_nation' : nation
+                }
+              , dataType : "json"
+              , success : function(data){
+                alert("success");
+                 $.each(data, function(idx, val) {
+                 if(val.realtime_num == 0){
+                    $(".nation_curr").empty();
+                    $(".nation_curr").text(val.keyword);
+                    $(".realtime_date").text(val.realTime);
+                 }
+                 else{
+
+              	   $(".reallist").append('<tr><td><a href="#" class="a_realrank" onclick="print_realword_list('+'\''+val.keyword+'\''+');">'+(idx+1)+'위 : '+val.keyword+'</a></td></tr>');
+                 }
+                 });
+              }
+              , error : function(){
+                 alert("error")
+              }
+        });
+  }//고규민
+  */
+  //윤상혁
+ 	function print_realword_list(word){
+  	  $("#articleTable").html("<tr><th>번 호</th><th>기사 제목</th></tr>");
+  	  $.ajax({
+  		 url: 'realwordSelect',
+  		 type: 'POST',
+  		 data: {
+  			 realword : word
+  			 , country : $(".nation_curr").text()
+  		 },
+  		 dataType: 'json',
+  		 success : function(data){
+  			 	
+ 			 	$.each(data, function(idx, val) {
+ 				 	$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td class='title_td'><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.arcURL+'"'+",999,0);' id='"+val.arcURL+"' class='title_a_real'>"+val.title+"</a></td> </tr>")
+ 			 	});
+  		 },
+  		 error : function(){
+  			 alert("에러!!");
+  		 }
+  	  });
+ 	}//윤상혁  
+  
+  
   function initialize2(){
-	  var earth = new WE.map('earth_div', {'tilting':false, 'sky': true, 'atmosphere': true});
+	  var earth = new WE.map('earth_div', {'tilting':false, 'sky': true, 'atmosphere': true, 'center' : [25.69056,51.43444], 'zoom' : 2.75 });
       var natural = WE.tileLayer('http://data.webglearth.com/natural-earth-color/{z}/{x}/{y}.jpg', {
           tileSize: 256,
           tms: true
@@ -511,71 +662,59 @@ b.redtext{
     	  //$(".we-pp").css("display","None");
 
       });
+      $("div#earth_div > canvas").attr("height", "737");
       return earth;
   }
   
-  function articleDetail(inputUrl,inputDivision_num,inputArticle_num){
-	  
-	  var url = inputUrl;
-	  var division_num = inputDivision_num;
-	  var article_num = inputArticle_num;
-	  // 파이썬 통신 후 html 태그들 가져와서 뿌리기.
-	   $.ajax({
-    		 url: 'articleDetail',
-    		 type: 'POST',
-    		 data: {
-    			 url : url,
-    			 division_num : division_num
-    		 },
-    		 dataType: 'text',
-    		 success : function(result){
-    			 var panel5 = $.jsPanel({
-    		          paneltype:   'modal',
-    		           position:    {my: "center", at: "center"},
-    		           contentOverflow: 'scroll',
-    		           theme: 'black filled',
-    		           contentSize: {width: 1000, height: 600},
-    		           headerToolbar: [
-    		        	   {
-    		                   item:     "<span onclick = 'scraping("+ article_num +");' class='fa fa-reply-all' style='cursor:pointer;'>",
-    		                   event:    "click",
-    		                   callback: function (event) {event.data.content.append("<p>You clicked on the menu ...</p>"); }
-    		               }
-    		           ],
-    		           show: "animated rubberBand",  
-    		           headerTitle: "Article",
-    		           border:   "1px solid darkgray",
-    		           content: function(){
-    		               $(this).css('background-color','rgba(0,0,0,' + 0.8 + ')');
-    		               $(this).css('z-index','120000');
-    		               return result;
-    		           },
-    		           headerControls: {
-    		           
-    		                controls : 'all',
-    		                   minimize : 'remove'
-    		               
-    		           },
-    		           dragit: {
-    		               disabled: false
-    		           },
-    		           callback: function () {
-    		               this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)","z-index":"120000", fontStyle: "italic" });
-    		    
-    		               this.content.css({"font-size": "16px","padding": "15px","z-index":"120000"});
-    		           }
-    		       });
-    		 },
-    		 error : function(){
-    			 alert("에러!!");
-    		 }
-    	}); 
-	  
-	   
-	  
-	  
-	  
-  }
+  function articleDetail(inputUrl,division_num,article_num){
+	  //alert(inputUrl);
+	  var item_tag = "<span onclick = 'scraping("+ article_num +");' class='fa fa-reply-all' style='cursor:pointer;'>";
+	  if(article_num==0){//스크랩 할 수 없는 기사인 경우(실검기사)
+		  item_tag = "<span class='fa fa-reply-all' style='cursor:pointer;'>";
+	  }
+	  $.ajax({
+		 url: "articleDetail"
+		 , type: "POST"
+		 , data: {
+			 url: inputUrl
+		 }, dataType: "text"
+		 , success: function(result){
+			 var panel5 = $.jsPanel({
+				 paneltype:   'modal',
+				 position:    {my: "center", at: "center"},
+				 contentOverflow: 'scroll',
+				 theme: 'black filled',
+		         contentSize: {width: 1000, height: 600},
+		         headerToolbar: [{
+		        	 item:     item_tag,
+		             event:    "click",
+		             callback: function (event) {event.data.content.append("<p>You clicked on the menu ...</p>"); }
+		         }],
+		         show: "animated rubberBand",
+		         headerTitle: "Article",
+		         border:   "1px solid darkgray",
+		         content: function(){
+		        	 $(this).css('background-color','rgba(0,0,0,' + 0.8 + ')');
+		        	 $(this).css('z-index','120000');
+		        	 return result;
+	        	 },
+	        	 headerControls: {
+	        		 controls : 'all',
+	        		 minimize : 'remove'
+        		 },
+		         dragit: {
+		        	 disabled: false
+	        	 },
+	        	 callback: function () {
+	        		 this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)","z-index":"120000", fontStyle: "italic" });
+	        		 this.content.css({"font-size": "16px","padding": "15px","z-index":"120000"});
+        		 }
+        	 });
+		 }, error: function(){
+			 alert("detail error");
+		 }
+	 });
+  }//articleDetail
   
   function scraping(article_num){
 	   	//스트랩 버튼을 눌렀을 때 db쪽으로 article번호를 넘기는 ajax코드
@@ -643,7 +782,7 @@ b.redtext{
 					    contentSize: '400 88',
 					    show:        'animated slideInUp',
 					    content:     "<div><i class='fa fa-exclamation-circle' style='margin:auto;'></i></div>"+
-					                 "<div><p style='margin:auto;'>Error</p></div>"+
+					                 "<div><p style='margin:auto;'>Already Exist</p></div>"+
 					                 "<div><i class='fa fa-remove'></i></div>",
 					    callback:    function(panel) {
 					        this.content.css({
@@ -682,6 +821,8 @@ b.redtext{
   		 }
 	    });
 }
+  
+
   
     </script>  
             <!-- loading jsPanel javascript -->
@@ -744,7 +885,67 @@ b.redtext{
     
     <script>
     $(function(){
+    	
+    	//주세휘
+        //마우스휠 이벤트
+        var basicNum = 0;
+         $('div#earth_div').on("mousemove", function(){
+            
+            if(basicNum == -3){
+                   $("div.we-pp-content > span").css("font-size", "8px");
+                }
+            else if(basicNum == 0){
+                $("div.we-pp-content > span").css("font-size", "10px");
+             }
+             else if(basicNum == 3){
+                
+                $("div.we-pp-content > span").css("font-size", "25px");
+             }else if(basicNum == 6){
+                
+                $("div.we-pp-content > span").css("font-size", "35px");
+             }
+            
+        }); 
+    
+           $("body").on("mousewheel DOMMouseScroll", function (e) {
+               var E = e.originalEvent;
+                 delta = 0;
+                 console.log(E);
+                 if (E.detail) {
+                     delta = E.detail * -40;
+                     
+                 }else{
+                     delta = E.wheelDelta;
+                    
+                 };
+                 if(delta < 0){
+                     // 마우스 휠을 아래로 내렸을 경우
+                     basicNum = basicNum -1;
+                    
+                 };
+                 if(delta > 0){
+                     // 마우스 휠을 위로 올렸을 경우
+                    basicNum = basicNum +1;
+                 };
+                 if(basicNum == -3){
+                    $("div.we-pp-content > span").css("font-size", "8px");
+                 }
+               else if(basicNum == 0){
+                   $("div.we-pp-content > span").css("font-size", "15px");
+                }
+                else if(basicNum == 3){
+                   
+                   $("div.we-pp-content > span").css("font-size", "23px");
+                }else if(basicNum == 6){
+                   
+                   $("div.we-pp-content > span").css("font-size", "28px");
+                }
+             
+          });
+           //주세휘//주세휘
+    	
             /*실시간 키워드*/
+            //고규민, 윤상혁(수정)
             var panel = $.jsPanel({
             position:    {my: "left-bottom", at: "left-bottom", offsetY: 10},
             theme: 'black filled',
@@ -752,21 +953,41 @@ b.redtext{
                 maximize: 'remove',
                 close: 'remove'
             },
-             dragit: {
-        disable: true
-    },
+            headerToolbar: 
+            [
+            	{
+        			item: "<div class = 'real_menu backward'><span class='fa fa-chevron-left' style='cursor:pointer;'></div>"
+                		+"<div class='flags'>"
+	        				+"<img class='flag_icon' nation_num='216' src='resources/img/flag_korea.png' width='24px'>&nbsp;"
+	        				+"<img class='flag_icon' nation_num='222' src='resources/img/flag_japan.png' width='24px'>&nbsp;"
+	        				+"<img class='flag_icon' nation_num='104' src='resources/img/flag_usa.png' width='24px'>&nbsp;"
+	        				+"<img class='flag_icon' nation_num='105' src='resources/img/flag_uk.png' width='24px'>&nbsp;"
+	        				+"<img class='flag_icon' nation_num='138' src='resources/img/flag_singapore.png' width='24px'>&nbsp;"
+	        				+"<img class='flag_icon' nation_num='33' src='resources/img/flag_canada.png' width='24px'>&nbsp;"
+	        				+"<img class='flag_icon' nation_num='222' src='resources/img/flag_india.png' width='24px'>"
+           				+"</div>"
+                		+"<div class = 'real_menu forward'><span class='fa fa-chevron-right' style='cursor:pointer;'></div>",
+           			event: "click",
+           			callback: function() {}
+        	}
+          ],
+        dragit: {
+        	disable: true
+    	},
             contentSize: {width: 260, height: 300},
             headerTitle: "Realtime Ranking",
             border:   "1px solid darkgray",
             content: function(){
-                $(this).css('background-color', 'rgba(0,0,0,' + 0.5 + ')');
-                return "<c:forEach items='${realKeywordList}' var='keyword' varStatus='stat' begin='0'><a href='#' class='a_realrank'>${stat.count}위 : ${keyword.keyword}</a><br/></c:forEach>";
+                $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
+                return "<div class = 'nation_curr' style='text-align:center;'>South Korea</div>"
+                		+'<div class = "reallist"><c:forEach items="${realKeywordList}" var="keyword" varStatus="stat" begin="0"><a href="#" class="a_realrank" onclick="print_realword_list('+"'${keyword.keyword}'"+');">${stat.count}위 : ${keyword.keyword}</a><br/></c:forEach></div>'
+                		+"<div class = 'realtime_date' style='text-align:right;'>${realKeywordList.get(0).realTime}</div>";
             },
             callback: function () {
                 this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});
-                this.content.css({"font-size": "16px","padding": "15px"});
+                this.content.css({"font-size": "16px","padding": "10px"});
             }
-        });
+        });//고규민(수정)
         
         var panel2 = $.jsPanel({
             position:    {my: "left-top", at: "left-top", offsetY: 60},
@@ -873,60 +1094,70 @@ b.redtext{
     
     </script>
       <script type="text/javascript">
-			$(document).ready(function(){
+			$(document).ready(function()
+			{
+/*    ========================================================    여기부터 현 수정    ========================================================    */
 			    //call the plugin
-			    $('body').mln_menu({
+			    $('body').mln_menu(
+			    {
 			    	'background' : '#333',
 			    	'color' : '#fff',
 			    	'hoverbackground' : '#fff',
 			    	'hovercolor' : '#808285',
 			    	'itens' : ['Home', 'User', 'Board', 'Logout'],
-			    	'hrefs' : ['#home', '#user', '#Board', '#logout'],
+			    	'hrefs' : ['#home', '#user', '#board', '#logout'],
 			    	'icons' : ['fa fa-home', 'fa fa-user', 'fa fa-pencil-square-o', 'icon-logout']
 			    });
                 
                
-	             $("#menu_left > ul > li > a").on("click", function(){
-	                
-	                 var href = $(this).attr("href");
-	                 if(href == '#Board'){
-	                     var board = $.jsPanel({
-	                        position:    {my: "center", at: "center", offsetY: 50, offsetX: 10},
-	                        theme: 'black filled',
-	                        contentSize: {width: 1200, height: 600},
-	                        headerTitle: "Board",
-	                    
-	                        //border:   "1px solid darkgray",
-	                        content: function(){
-	                            $(this).css('background-color', 'rgba(255,255,255,' + 1 + ')');
-	                            /*return "<p style='padding:10px;'>1. 일본 지진</p>";*/
-	                        },
-	                         contentIframe: {
-	                            width:  1200,
-	                            height: 600,
-	                            src:    'file:///C:/Users/user/Downloads/startbootstrap-agency-gh-pages/startbootstrap-agency-gh-pages/index.html',
-	                            name:   'myFrame',
-	                            style:  {'border': '1px solid #000'}
-	                        },
-	                        callback: function () {
-	                            this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});
-	                            this.content.css({"font-size": "16px","padding": "15px"});
-	
-	                        }
-	                    });
-	                     
-	                 }
-	             
-	             });
+             $("#menu_left > ul > li > a").on("click", function(){
                 
-			 });
-          
-          
-          
-         
-            
-          
-        
+            	 
+            	 var href = $(this).attr("href");
+                 if(href == '#board'){
+                     var board = $.jsPanel({
+                        position:    {my: "center", at: "center", offsetY: 50, offsetX: 10},
+                        theme: 'black filled',
+                        contentSize: {width: 1200, height: 600},
+                        headerTitle: "Board",
+                        border:   "1px solid darkgray",
+                        content: "",
+                        contentIframe: {
+                            width:  1200,
+                            height: 600,
+                            src:    'boardList',
+                            name:   'myFrame',
+                            style:  {'border': '1px solid #000'}
+                        },
+                        callback: function () {
+                            this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", "fontStyle": "italic" ,"fontWeight": "bold"});
+                        }
+                    });
+                     
+                 } else if(href == '#user'){
+                	 var user = $.jsPanel({
+                         position:    {my: "center", at: "center", offsetY: 50, offsetX: 10},
+                         theme: 'black filled',
+                         contentSize: {width: 1200, height: 600},
+                         headerTitle: "My Page", 
+                         border:   "1px solid darkgray",
+                         content: "",
+                         contentIframe: {
+                             width:  1200,
+                             height: 600,
+                             src:    'myPage',
+                             name:   'myFrame',
+                             style:  {'border': '1px solid #000'}
+                         },
+                         callback: function () {
+                             this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", "fontStyle": "italic" ,"fontWeight": "bold"});
+                         }
+                     });
+                 }
+	          })
+			});
+/*    ========================================================    여기까지 현 수정    ========================================================    */
+			
 		</script>
 <script type="text/javascript">
 
@@ -951,6 +1182,7 @@ b.redtext{
 <!-- SmartMenus jQuery init -->
 <script type="text/javascript">
 $(function() {
+	
 	   $('.nation > li > ul> li > a').on('click', function(){
         
          if($('input:radio[name=radio1]').is(':checked')){
@@ -962,7 +1194,6 @@ $(function() {
              var nation = $('input:radio[name=radio1]:checked').attr('id');
              $("div#nation").empty();
              $("div#nation").append(nation);
-         	 
           
              $.ajax({
             			url : "blist"
@@ -1095,7 +1326,6 @@ function markerFilter(){
  		end = 0;
  	}
 	 $.ajax({
-		
 		url: 'keywordFilter',
 		type: 'POST',
 		data: {
@@ -1113,22 +1343,124 @@ function markerFilter(){
 			$.each(data, function(idx, val) {
 				console.log(val.latitude);
 				if(val.point > 0){
-					WE.marker([val.latitude, val.longitude],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='bluetext' id='"+val.keyword_num+"'>"+val.keyword+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
+					WE.marker([val.latitude, val.longitude],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:15px;'><b class='bluetext' id='"+val.keyword_num+"'>"+val.keyword+"<b></span>", {maxWidth: 160, closeButton: false}).openPopup();
 				}
 				if(val.point < 0){
-					WE.marker([val.latitude, val.longitude],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='redtext' id='"+val.keyword_num+"'>"+val.keyword+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
+					WE.marker([val.latitude, val.longitude],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:15px;'><b class='redtext' id='"+val.keyword_num+"'>"+val.keyword+"<b></span>", {maxWidth: 160, closeButton: false}).openPopup();
 				}
-				if(val.point == null){
+				if(val.point == null || val.point == 0.0){
 					console.log(val.point);
-					WE.marker([val.latitude, val.longitude],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:30px;'><b class='blacktext' id='"+val.keyword_num+"'>"+val.keyword+"<b></span>", {maxWidth: 160, closeButton: true}).openPopup();
+					WE.marker([val.latitude, val.longitude],"", 10, 10).addTo(earth).bindPopup("<span style = 'font-size:15px;'><b class='blacktext' id='"+val.keyword_num+"'>"+val.keyword+"<b></span>", {maxWidth: 160, closeButton: false}).openPopup();
 				}
+				
 			});
+			$(".we-pp-tip").removeAttr("background");
+		      $(".we-pp-wrapper").removeAttr("background");
+		      $(".we-pp").mouseover(function(){
+		    	 $(".we-pp-wrapper").css('z-index','200000');
+		    	 $(".we-pp-content").css('z-index','200000');
+		    	 $(this).css('z-index','200000');
+		      });
+		      
+		      $(".we-pp").mouseout(function(){
+		     	 $(".we-pp-wrapper").css('z-index','0');
+		     	 $(".we-pp-content").css('z-index','0');
+		     	 $(this).css('z-index','0');
+		       });
+		      
+		      $("div#earth_div > canvas").attr("height", "737");
+		      $(".we-pp-wrapper").click(function(){
+		    	  $("#articleTable").html("<tr><th>번 호</th><th>기사 제목</th></tr>");
+		    	  var text = $(this).children().children().children().first().attr("id");
+		    	  $.ajax({
+		     		 url: 'rkeywordSelect',
+		     		 type: 'POST',
+		     		 data: {
+		     			 keyword_num : text
+		     		 },
+		     		 dataType: 'json',
+		     		 success : function(data){
+		    			 	$.each(data, function(idx, val) {
+		    				 	$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+","+val.article_num+");' id='"+val.url+"' class='title_a'>"+val.title+"</a></td> </tr>")
+		    			 	});
+		     		 },
+		     		 error : function(){
+		     			 alert("에러!!");
+		     		 }
+		     	  });
+		      });   
 		},
 		error : function(){
 			alert("에러!!");
 		}
 	});  
+	 
 }
+
+function keywordSearch(){
+	    var keyword = $(".form-control").val();	// 스트링으로 잘 들어옴.
+	  
+		//현재 선택된 nation 값
+		var nation_num = $('input:radio[name=radio1]:checked').attr('value');
+		//현재 선택된 broadcast 값 
+	    var broadcast_num = $('input:radio[name=radio2]:checked').attr("value");
+	    //현재 선택된  division 값
+	    var division_num = $('input:radio[name=radio3]:checked').attr("value");
+	    //현재 선택된 fromDate 값
+		var start = $("#datepicker-example7-start").val();
+	    //현재 선택된 toDate 값
+		var end = $("#datepicker-example7-end").val();
+	
+	 	if(typeof nation_num == "undefined"){
+	 		nation_num = 0;
+	 	} 
+	 	if(typeof broadcast_num == "undefined"){
+	 		broadcast_num = 0;
+	 	}
+	 	if(typeof division_num == "undefined"){
+	 		division_num = 0;
+	 	}
+	 	if(start == ""){
+	 		start = 0;
+	 	}
+	 	if(end == ""){
+	 		end = 0;
+	 	}
+	  	
+	 	$.ajax({
+			url: 'selectArticleFromSearch',
+			type: 'POST',
+			data: {
+				nation_num : nation_num,
+				broadcast_num : broadcast_num,
+				division_num : division_num,
+				fromDate : start,
+				toDate : end,
+				keyword : keyword
+			},
+			dataType: 'json',
+			success : function(data){
+		    	if(data.length == 0){
+		    		$("#articleTable").html("");
+		    		$("#articleTable").append("<tr><td colspan='3' style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>데이터가 존재하지 않습니다.</td> </tr>")
+		    	}
+		    	else{
+		    		$("#articleTable").html("<tr><th>번 호</th><th>기사 제목</th></tr>");
+			    	$.each(data, function(idx, val) {
+	  					$("#articleTable").append("<tr><td style = 'table>tr>td{padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;}'>"+idx+"</td><td><a href='javascript:void(0);' onclick='articleDetail("+'"'+val.url+'"'+","+val.division_num+","+val.article_num+");' id='"+val.url+"' class='title_a'>"+val.title+"</a></td> </tr>")
+	  			 	});
+		    	}
+			},
+			error : function(){
+				alert("에러!!");
+			}
+		});
+	 	
+}
+
+
+
+
 </script>
      
 
