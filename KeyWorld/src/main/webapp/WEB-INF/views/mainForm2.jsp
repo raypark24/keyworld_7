@@ -196,22 +196,25 @@ b.redtext{
    color : red;
 }
 .a_rank{
-   color : #99FFCC !important;
+   color : rgb(251,207,53) !important;
 }
 .a_realrank{
-   color : #99FFCC !important;
+   color : rgb(251,207,53) !important;
+} 
+.realtime_date{
+    color : white !important;
 }
 .a_rank:hover, .title_a:hover{
-   color : #fed136 !important;
+   color : white !important;
 }
 .a_realrank:hover{
-   color : #fed136 !important;
+   color : white !important;
 }
 .title_a{
-   color : #99FFCC !important;
+   color : rgb(251,207,53) !important;
 }
 .title_a_real{
-   color : #99FFCC !important;
+   color : rgb(251,207,53) !important;
 }
 /*YSH*/
 div.flags{
@@ -667,7 +670,7 @@ div.real_menu{
 			markerFilter($('#language').attr('class'));
     		ranklist_language_filtering(type);
       });
-      
+      $('.ranklist').children().css("style","line-height: 1.3");
   }
   
 function movenation(direction){
@@ -953,7 +956,6 @@ function realchart(){
   }//realchart
   
   function drawChart(){
-	  alert("drawChart()");
 	  google.charts.load('current', {packages: ['corechart', 'line']});
 	  google.charts.setOnLoadCallback(drawCurveTypes);
 
@@ -1266,7 +1268,7 @@ function realchart(){
          /*실시간 키워드*/
             //고규민, 윤상혁(수정)
             var panel = $.jsPanel({
-            position:    {my: "left-bottom", at: "left-bottom", offsetY: 0},
+            position:    {my: "left-bottom", at: "left-bottom", offsetY: 10},
             contentOverflow: 'scroll',
             theme: 'black filled',
             headerControls: {
@@ -1292,21 +1294,21 @@ function realchart(){
         dragit: {
         	disable: true
     	},
-    	contentSize: {width: 260, height: 295},
+    	contentSize: {width: 330, height: 300},
         headerTitle: "Realtime Ranking",
         border:   "1px solid darkgray",
         content: function(){
             $(this).css('background-color', 'rgba(0,0,0,' + 0.3 + ')');
     		return "<div class = 'real_menu'><img src='resources/img/chart-icon-color.png' onclick='realchart();' style='width:30px;margin-left:5px;'></div>"
             		+"<div class = 'real_menu backward' style='margin-left:5px;'><span class='fa fa-chevron-left backward' style='cursor:pointer;'></div>"
-           			+"<div class = 'real_menu nation_curr' style='margin-left:10px;width:120px;text-align:center;'>South Korea</div>"
+           			+"<div class = 'real_menu nation_curr' style='color:white;margin-left:10px;width:180px;text-align:center;'>South Korea</div>"
             		+"<div class = 'real_menu forward' style='margin-left:10px;margin-right:5px;'><span class='fa fa-chevron-right' style='cursor:pointer;'></div><br>"
             		+"<div class = 'realtime_date' style='text-align:right;'>${realKeywordList.get(0).realTime}</div>"
-            		+'<div class = "reallist"><c:forEach items="${realKeywordList}" var="keyword" varStatus="stat" begin="0"><a href="#" class="a_realrank" onclick="print_realword_list('+"'${keyword.keyword}'"+');">${stat.count}위 : ${keyword.keyword}</a><br/></c:forEach></div>';
+            		+'<div class = "reallist" style="line-height: 1.3"><c:forEach items="${realKeywordList}" var="keyword" varStatus="stat" begin="0"><a href="#" class="a_realrank" onclick="print_realword_list('+"'${keyword.keyword}'"+');">${stat.count}위 : ${keyword.keyword}</a><br/></c:forEach></div>';
         },
             callback: function () {
-                this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});
-                this.content.css({"font-size": "16px","padding": "10px"});
+            	this.header.title.css({"font-size" : "25px","color":"rgb(251,207,53)", "fontStyle": "italic" ,"fontWeight": "bold"});
+                this.content.css({"font-size": "25px","color":"rgb(251,207,53)","padding": "10px"});
             }
         });//고규민(수정)
         
@@ -1314,7 +1316,7 @@ function realchart(){
         var panel2 = $.jsPanel({
             position:    {my: "left-top", at: "left-top", offsetY: 60},
             theme: 'black filled',
-            contentSize: {width: 260, height: 248},
+            contentSize: {width: 330, height: 248},
             headerControls: {
                 maximize: 'remove',
                 close: 'remove'
@@ -1327,20 +1329,20 @@ function realchart(){
             content: function(){
                 $(this).css('background-color', 'rgba(0,0,0,' + 0.5 + ')');
                 //return "<c:forEach items='${rankingList}' var='keyword' varStatus='stat'>${keyword.keyword} <br/></c:forEach>";
-                return "<div class = 'ranklist'><c:forEach items='${rankingList}' var='keyword' varStatus='stat' begin='0'><a href='#' class='a_rank' id='${keyword.keyword_num}'>${stat.count}위 : ${keyword.keyword}</a><br/></c:forEach></div>";
+                return "<div style='line-height: 1.3' class = 'ranklist'><c:forEach items='${rankingList}' var='keyword' varStatus='stat' begin='0'><a href='#' class='a_rank' id='${keyword.keyword_num}'>${stat.count}위 : ${keyword.keyword}</a><br/></c:forEach></div>";
             },
             callback: function () {
-                this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" ,fontWeight: "bold"});
-                this.content.css({"font-size": "16px","padding": "15px"});
+            	this.header.title.css({"font-size" : "25px","color":"rgb(251,207,53)", "fontStyle" : "italic" ,"fontWeight": "bold"});
+                this.content.css({"font-size": "25px","color":"rgb(251,207,53)","padding": "15px"});
                 
             }
         });
         
         var panel4 = $.jsPanel({
-            position:    {my: "right-top", at: "right-top", offsetY: 85 , offsetX :-15},
+            position:    {my: "right-bottom", at: "right-bottom", offsetY: 10 , offsetX :-15},
             contentOverflow: 'scroll',
             theme: 'black filled',
-            contentSize: {width: 300, height: 500},
+            contentSize: {width: 660, height: 250},
             headerToolbar: [
                 {
                     item:     "<span class='fa fa-bars' style='cursor:pointer;'>",
@@ -1369,13 +1371,11 @@ function realchart(){
             border:   "1px solid darkgray",
             content: function(){
                 $(this).css('background-color', 'rgba(0,0,0,' + 0.5 + ')');
-                return "<div id = 'articleList'><table id = 'articleTable'><tr><th>번 호</th><th>기사 제목</th></tr></table></div>";
+                return "<div id = 'articleList' style='line-height: 1.3'><table id = 'articleTable'><tr><th>번 호</th><th>기사 제목</th></tr></table></div>";
             },
             callback: function () {
-                this.header.title.css({"font-size" : "12px","color":"rgb(251,207,53)", fontStyle: "italic" });
-     
-                this.content.css({"font-size": "16px","padding": "15px"});
-                
+            	this.header.title.css({"font-size" : "25px","color":"rgb(251,207,53)", "fontStyle": "italic" ,"fontWeight": "bold"});
+                this.content.css({"font-size": "25px","color":"rgb(251,207,53)","padding": "10px"});
             }
         });
         
@@ -1514,7 +1514,6 @@ $(function() {
   	   
        var checked = $('input:radio[name=radio1]:checked').val();
        var nation = $('input:radio[name=radio1]:checked').attr('id');
-       alert(nation);
        $("div#nation").empty();
        $("div#nation").append(nation);
        $("#broadcast").empty();
@@ -1648,7 +1647,6 @@ function division(){
 };
 
 function markerFilter(type){
-	alert(type);
     //현재 선택된 nation 값
     var nation_num = $('input:radio[name=radio1]:checked').attr('value');
     //현재 선택된 broadcast 값 
@@ -1762,15 +1760,17 @@ function markerFilter(type){
         dataType: 'json',
         success : function(data){
         	$('.ranklist').html('');
-	        $.each(data, function(idx, val) {
-				$('.ranklist').append("<a href='#' class='a_rank' id='"+val.keyword_num+"'>"+idx+"위 : "+val.keyword+"</a><br/>");
+	        var index;
+        	$.each(data, function(idx, val) {
+	        	index = idx+1;
+				$('.ranklist').append("<a href='#' class='a_rank' id='"+val.keyword_num+"'>"+index+"위 : "+val.keyword+"</a><br/>");
 	        });
         },
         error : function(){
         	alert("에러!!");
         }
     });
-    
+    $('.ranklist').children().css("style","line-height: 1.3");
 }
 
 function keywordSearch(){
